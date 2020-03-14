@@ -90,3 +90,53 @@ func GetUserByID(id string) (models.User, error) {
 	}
 	return user, nil
 }
+
+//Register ...
+func Register(email string, password string) (models.User, error) {
+	user := models.User{}
+	var err error
+	if !(checkAuthData(email, password)) {
+		err = fmt.Errorf("%s", "Email or password is invalid")
+		return user, err
+	}
+
+	user, err = GetUserByEmail(email)
+
+	if user.ID != "" {
+		err = fmt.Errorf("%s", "User is not available")
+		return user, err
+	}
+
+	hashPwd, _ := utils.Generate(password)
+
+	user, err = CreateUser(email, hashPwd, "", "", "", 0)
+
+	if err != nil {
+		return user, err
+	}
+
+	token, err := jwt.IssueToken(user.ID, user.Email)
+	user.Token = token
+
+	return user, err
+}
+
+//CreateUser ...
+func CreateUser(email, password,
+	phoneNumber, firstName, lastName string, position int) (models.User, error) {
+
+	user := models.User{
+		Email:       email,
+		Password:    password,
+		PhoneNumber: phoneNumber,
+		FirstName:   firstName,
+		LastName:    lastName,
+		Position:    position,
+	}
+
+	dbConn := db.GetDB()
+
+	dbConn = dbConn.Create(&user)
+
+	return user, dbConn.Error
+}

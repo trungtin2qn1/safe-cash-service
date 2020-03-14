@@ -1,6 +1,8 @@
 package routers
 
 import (
+	mediaController "safe-cash-service/controllers/media"
+	"safe-cash-service/controllers/notification"
 	"safe-cash-service/controllers/user"
 	"safe-cash-service/middleware"
 
@@ -23,8 +25,15 @@ func SetUpRouter() {
 	{
 		auth.Use(middleware.VerifyJWTToken)
 		auth.POST("/register", user.Register)
+		auth.GET("/self", user.GetInfo)
+		auth.PUT("/self", user.UpdateInfo)
 
-		auth.GET("/")
+		media := auth.Group("/media")
+		{
+			media.POST("", mediaController.Upload)
+		}
+
+		auth.POST("/notification/token", notification.SaveToken)
 	}
 
 	router.Run(":6000")

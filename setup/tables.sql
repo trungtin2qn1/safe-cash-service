@@ -51,3 +51,33 @@ CREATE TABLE users (
     role text
 );
 
+--Create table notification_tokens
+--Drop table notification_tokens
+drop table if exists notification_tokens;
+drop sequence if exists notification_tokens_id_seq;
+CREATE SEQUENCE notification_tokens_id_seq;
+
+CREATE TABLE notification_tokens (
+    id bigint NOT NULL DEFAULT next_id('notification_tokens_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    value text,
+    user_id bigint,
+    foreign key (user_id) references users(id)
+);
+
+--Create table medias
+--Drop table medias
+drop table if exists medias;
+drop sequence if exists medias_id_seq;
+CREATE SEQUENCE medias_id_seq;
+
+CREATE TABLE medias (
+    id bigint NOT NULL DEFAULT next_id('medias_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    link text,
+    type int
+);
