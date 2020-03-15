@@ -19,6 +19,6 @@ func Upload(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{
-		"message": "Success",
+		"message": "Successfully Uploaded File",
 	})
 }

@@ -18,12 +18,15 @@ type AuthReq struct {
 
 func checkAuthData(email string, password string) bool {
 	if email == "" {
+		log.Println("email is null")
 		return false
 	}
 	if utils.ValidateFormat(email) != nil {
+		log.Println("Email's format is not valid")
 		return false
 	}
 	if len(password) < 6 {
+		log.Println("Len of password is not greater than 5")
 		return false
 	}
 	return true

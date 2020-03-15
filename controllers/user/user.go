@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"safe-cash-service/models"
 	"safe-cash-service/service/user"
@@ -43,7 +44,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	log.Println("authReq:", authReq)
+
 	user, err := user.Login(authReq.Email, authReq.Password)
+
+	log.Println("err:", err)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
