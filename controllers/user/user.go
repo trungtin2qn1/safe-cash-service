@@ -4,11 +4,42 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"safe-cash-service/display"
 	"safe-cash-service/models"
 	"safe-cash-service/service/user"
 
 	"github.com/gin-gonic/gin"
 )
+
+//RegisterPublic ...
+func RegisterPublic(c *gin.Context) {
+	authReq := user.AuthReq{}
+	err := c.ShouldBind(&authReq)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+
+	user, store, err := user.RegisterPublic(authReq.Email, authReq.Password, authReq.StoreName)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Server is busy",
+		})
+		return
+	}
+
+	res := display.AuthRes{}
+
+	res.Token = user.Token
+	user.Token = ""
+	res.User = user
+	res.Store = store
+
+	c.JSON(200, res)
+}
 
 // Register ...
 func Register(c *gin.Context) {

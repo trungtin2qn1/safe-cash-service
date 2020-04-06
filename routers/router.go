@@ -19,6 +19,7 @@ func SetUpRouter() {
 	router := gin.Default()
 
 	api := router.Group("/apis")
+	api.POST("/register", user.RegisterPublic)
 	api.POST("/login", user.Login)
 
 	auth := api.Group("/auth")

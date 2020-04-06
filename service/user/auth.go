@@ -1,19 +1,19 @@
 package user
 
 import (
-	"errors"
 	"fmt"
 	"log"
-	"safe-cash-service/db"
 	"safe-cash-service/models"
+	"safe-cash-service/service/store"
 	"safe-cash-service/utils"
 	"safe-cash-service/utils/jwt"
 )
 
 //AuthReq ...
 type AuthReq struct {
-	Email    string `json:"email,omitempty"`
-	Password string `json:"password,omitempty"`
+	Email     string `json:"email,omitempty"`
+	Password  string `json:"password,omitempty"`
+	StoreName string `json:"store_name,omitempty"`
 }
 
 func checkAuthData(email string, password string) bool {
@@ -60,42 +60,17 @@ func Login(email string, password string) (models.User, error) {
 		return user, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email)
+	token, err := jwt.IssueToken(user.ID, user.Email, "")
 	user.Token = token
 
 	return user, err
 }
 
-// GetUserByEmail ...
-func GetUserByEmail(email string) (models.User, error) {
-	dbConn := db.GetDB()
-
-	user := models.User{}
-	res := dbConn.Where("email = ?", email).First(&user)
-	if res.Error != nil {
-		log.Println(res.Error)
-		return user, errors.New("Data or data type is invalid")
-	}
-
-	return user, nil
-}
-
-// GetUserByID ...
-func GetUserByID(id string) (models.User, error) {
-	dbConn := db.GetDB()
-
-	user := models.User{}
-
-	res := dbConn.Where("id = ?", id).Find(&user)
-	if res.Error != nil {
-		log.Println(res.Error)
-		return user, errors.New("Data or data type is invalid")
-	}
-	return user, nil
-}
-
 //Register ...
-func Register(email string, password string) (models.User, error) {
+func Register(email, password string) (models.User, error) {
+	//TODO:
+	// Get userid and store id from token
+
 	user := models.User{}
 	var err error
 	if !(checkAuthData(email, password)) {
@@ -112,34 +87,53 @@ func Register(email string, password string) (models.User, error) {
 
 	hashPwd, _ := utils.Generate(password)
 
-	user, err = CreateUser(email, hashPwd, "", "", "", 0)
+	user, err = CreateUser(email, hashPwd, "", "", "", 0, nil)
 
 	if err != nil {
 		return user, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email)
+	token, err := jwt.IssueToken(user.ID, user.Email, "")
 	user.Token = token
 
 	return user, err
 }
 
-//CreateUser ...
-func CreateUser(email, password,
-	phoneNumber, firstName, lastName string, position int) (models.User, error) {
-
-	user := models.User{
-		Email:       email,
-		Password:    password,
-		PhoneNumber: phoneNumber,
-		FirstName:   firstName,
-		LastName:    lastName,
-		Position:    position,
+//RegisterPublic ...
+func RegisterPublic(email, password, storeName string) (models.User, models.Store, error) {
+	user := models.User{}
+	storeInfo := models.Store{}
+	var err error
+	if !(checkAuthData(email, password)) {
+		err = fmt.Errorf("%s", "Email or password is invalid")
+		return user, storeInfo, err
 	}
 
-	dbConn := db.GetDB()
+	storeInfo, err = store.GetStoreByName(storeName)
 
-	dbConn = dbConn.Create(&user)
+	if storeInfo.ID != "" {
+		err = fmt.Errorf("%s", "Store has been registered")
+		return user, storeInfo, err
+	}
 
-	return user, dbConn.Error
+	storeInfo, err = store.CreateStore(storeName)
+
+	if storeInfo.ID == "" {
+		err = fmt.Errorf("%s", "Can't add store info to database")
+		return user, storeInfo, err
+	}
+
+	hashPwd, _ := utils.Generate(password)
+
+	user, err = CreateUser(email, hashPwd, "", "", "", 0, &storeInfo.ID)
+
+	if err != nil {
+		return user, storeInfo, err
+	}
+
+	token, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID)
+
+	user.Token = token
+
+	return user, storeInfo, err
 }

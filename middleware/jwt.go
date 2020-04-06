@@ -19,7 +19,7 @@ func VerifyJWTToken(c *gin.Context) {
 		return
 	}
 	rawToken := string(token[len("Tin "):])
-	userID, _, err := jwt.VerificationToken(rawToken)
+	userID, storeID, err := jwt.VerificationToken(rawToken)
 	if err != nil {
 		//go utils.LogErrToFile(err.Error())
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -29,6 +29,7 @@ func VerifyJWTToken(c *gin.Context) {
 	}
 	fmt.Println(userID)
 	c.Set("user_id", userID)
+	c.Set("store_id", storeID)
 	c.Next()
 }
 

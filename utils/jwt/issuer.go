@@ -11,10 +11,11 @@ import (
 )
 
 //IssueToken ...
-func IssueToken(id, email string) (string, error) {
+func IssueToken(id, email, storeID string) (string, error) {
 	type ConsumerInfo struct {
-		ID    string `json:"id,omitempty"`
-		Email string `json:"email,omitempty"`
+		ID      string `json:"id,omitempty"`
+		Email   string `json:"email,omitempty"`
+		StoreID string `json:"store_id,omitempty"`
 		jwt.StandardClaims
 	}
 
@@ -24,6 +25,7 @@ func IssueToken(id, email string) (string, error) {
 	claims := &ConsumerInfo{
 		id,
 		email,
+		storeID,
 		jwt.StandardClaims{
 			Issuer:    "Tin",
 			ExpiresAt: expire,
@@ -50,17 +52,19 @@ func SignToken(claims jwt.Claims) (string, error) {
 //VerificationToken ...
 func VerificationToken(tokenString string) (string, string, error) {
 	type ConsumerInfo struct {
-		ID    string `json:"id,omitempty"`
-		Email string `json:"email,omitempty"`
+		ID      string `json:"id,omitempty"`
+		Email   string `json:"email,omitempty"`
+		StoreID string `json:"store_id,omitempty"`
 		jwt.StandardClaims
 	}
 
 	// Parse the token
-	token, err := jwt.ParseWithClaims(tokenString, &ConsumerInfo{}, func(token *jwt.Token) (interface{}, error) {
-		// since we only use the one private key to sign the tokens,
-		// we also only use its public counter part to verify
-		return verifyKey, nil
-	})
+	token, err := jwt.ParseWithClaims(tokenString, &ConsumerInfo{},
+		func(token *jwt.Token) (interface{}, error) {
+			// since we only use the one private key to sign the tokens,
+			// we also only use its public counter part to verify
+			return verifyKey, nil
+		})
 
 	if err != nil {
 		go utils.LogErrToFile(err.Error())
@@ -73,5 +77,6 @@ func VerificationToken(tokenString string) (string, string, error) {
 	}
 	fmt.Println("Claims id: ", claims.ID)
 	fmt.Println("Claims email: ", claims.Email)
-	return claims.ID, claims.Email, err
+	fmt.Println("Claims store id:", claims.StoreID)
+	return claims.ID, claims.StoreID, err
 }

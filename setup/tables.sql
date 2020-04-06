@@ -32,6 +32,20 @@ END;
 $$ LANGUAGE plpgsql;
 --Generate new func insta5
 
+--Create table stores
+--Drop table stores
+drop table if exists stores;
+drop sequence if exists stores_id_seq;
+CREATE SEQUENCE stores_id_seq;
+
+CREATE TABLE stores (
+    id bigint NOT NULL DEFAULT next_id('stores_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    name text unique
+);
+
 --Create table users
 --Drop table users
 drop table if exists users;
@@ -44,11 +58,14 @@ CREATE TABLE users (
     updated_at timestamp,
     deleted_at timestamp,
     email text,
+    phone_number text,
     first_name text,
     last_name text,
     password text,
     username text,
-    role text
+    position int,
+    store_id bigint,
+    foreign key (store_id) references stores(id)
 );
 
 --Create table notification_tokens
