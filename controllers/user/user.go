@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"safe-cash-service/display"
 	"safe-cash-service/models"
 	"safe-cash-service/service/user"
 
@@ -22,7 +21,7 @@ func RegisterPublic(c *gin.Context) {
 		return
 	}
 
-	user, store, err := user.RegisterPublic(authReq.Email, authReq.Password, authReq.StoreName)
+	user, _, err := user.RegisterPublic(authReq.Email, authReq.Password, authReq.StoreName)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -31,18 +30,21 @@ func RegisterPublic(c *gin.Context) {
 		return
 	}
 
-	res := display.AuthRes{}
+	// res := display.AuthRes{}
 
-	res.Token = user.Token
-	user.Token = ""
-	res.User = user
-	res.Store = store
+	// res.Token = user.Token
+	// user.Token = ""
+	// res.User = user
+	// res.Store = store
 
-	c.JSON(200, res)
+	c.JSON(200, user)
 }
 
 // Register ...
 func Register(c *gin.Context) {
+	interfaceStoreID, _ := c.Get("store_id")
+	storeID := fmt.Sprintf("%v", interfaceStoreID)
+
 	authReq := user.AuthReq{}
 	err := c.ShouldBind(&authReq)
 	if err != nil {
@@ -52,7 +54,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	user, err := user.Register(authReq.Email, authReq.Password)
+	user, err := user.Register(authReq.Email, authReq.Password, &storeID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

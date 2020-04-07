@@ -67,7 +67,7 @@ func Login(email string, password string) (models.User, error) {
 }
 
 //Register ...
-func Register(email, password string) (models.User, error) {
+func Register(email, password string, storeID *string) (models.User, error) {
 	//TODO:
 	// Get userid and store id from token
 
@@ -87,7 +87,7 @@ func Register(email, password string) (models.User, error) {
 
 	hashPwd, _ := utils.Generate(password)
 
-	user, err = CreateUser(email, hashPwd, "", "", "", 0, nil)
+	user, err = CreateUser(email, hashPwd, "", "", "", 0, storeID)
 
 	if err != nil {
 		return user, err
