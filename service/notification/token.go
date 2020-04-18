@@ -15,6 +15,7 @@ func SaveToken(userID, token string) (models.NotificationToken, error) {
 	notificationToken := models.NotificationToken{
 		UserID: &userID,
 		Token:  token,
+		Value:  token,
 	}
 
 	dbConn := db.GetDB()

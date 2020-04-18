@@ -36,3 +36,28 @@ func SaveToken(c *gin.Context) {
 	c.JSON(200, notificationToken)
 
 }
+
+//Send ....
+func Send(c *gin.Context) {
+	interfaceUserID, _ := c.Get("user_id")
+	userID := fmt.Sprintf("%v", interfaceUserID)
+
+	notiTokens, err := notification.GetOwnerStoreNotificationByUserID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err,
+		})
+		return
+	}
+
+	for _, notiToken := range notiTokens {
+		err := notification.Send(notiToken)
+		if err != nil {
+			continue
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Success",
+	})
+}

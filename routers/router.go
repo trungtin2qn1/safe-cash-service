@@ -35,6 +35,7 @@ func SetUpRouter() {
 		}
 
 		auth.POST("/notification/token", notification.SaveToken)
+		auth.POST("/notification", notification.Send)
 	}
 
 	router.Run(":6000")
