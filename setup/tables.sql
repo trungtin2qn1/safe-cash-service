@@ -80,6 +80,7 @@ CREATE TABLE notification_tokens (
     updated_at timestamp,
     deleted_at timestamp,
     token text unique,
+    value text unique,
     user_id bigint,
     foreign key (user_id) references users(id)
 );
