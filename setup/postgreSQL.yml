@@ -2,11 +2,12 @@ version: '3'
 services:
   database:
     image: "postgres" # use latest official postgres version
+    restart: always
     env_file:
       - database.env # configure postgres
-    volumes:
-      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
-    # container_name: safe-smart-cash_postgres
+    # volumes:
+    #   - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+    container_name: safe-cash-service_postgres
     ports:
       - 5432:5432
 
