@@ -1,9 +1,11 @@
-FROM golang:1.12-alpine as builder
+FROM golang:1.14-alpine as builder
 WORKDIR /go/src/safe-cash-service
 COPY . .
 RUN apk add --update git make
-RUN go get -u github.com/Masterminds/glide
-RUN glide install
+# RUN go get -u github.com/gin-gonic/gin
+# RUN go get -u github.com/Masterminds/glide
+# RUN glide install
+RUN go get ./...
 RUN make build
 
 FROM alpine:latest

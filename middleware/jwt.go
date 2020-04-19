@@ -3,7 +3,6 @@ package middleware
 import (
 	"fmt"
 	"net/http"
-	"safe-cash-service/service/apiKey"
 	"safe-cash-service/utils/jwt"
 
 	"github.com/gin-gonic/gin"
@@ -33,26 +32,26 @@ func VerifyJWTToken(c *gin.Context) {
 	c.Next()
 }
 
-//CheckAPIKey ...
-func CheckAPIKey(c *gin.Context) {
-	key := c.Request.Header.Get("api-key")
+// //CheckAPIKey ...
+// func CheckAPIKey(c *gin.Context) {
+// 	key := c.Request.Header.Get("api-key")
 
-	if key == "" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "Unauthorized",
-		})
-		return
-	}
+// 	if key == "" {
+// 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+// 			"message": "Unauthorized",
+// 		})
+// 		return
+// 	}
 
-	serviceKey, err := apiKey.GetByKey(key)
-	if err != nil {
-		//go utils.LogErrToFile(err.Error())
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "Unauthorized",
-		})
-		return
-	}
+// 	serviceKey, err := apiKey.GetByKey(key)
+// 	if err != nil {
+// 		//go utils.LogErrToFile(err.Error())
+// 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+// 			"message": "Unauthorized",
+// 		})
+// 		return
+// 	}
 
-	c.Set("service-key-id", serviceKey.ID)
-	c.Next()
-}
+// 	c.Set("service-key-id", serviceKey.ID)
+// 	c.Next()
+// }

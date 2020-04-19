@@ -1,11 +1,11 @@
 package jwt
 
 import (
-	"cinema-admin/utils"
 	"crypto/rsa"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"safe-cash-service/utils"
 
 	"github.com/dgrijalva/jwt-go"
 )

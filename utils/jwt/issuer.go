@@ -1,10 +1,10 @@
 package jwt
 
 import (
-	"cinema-admin/utils"
 	"errors"
 	"fmt"
 	"log"
+	"safe-cash-service/utils"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
