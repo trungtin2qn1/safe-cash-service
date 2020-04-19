@@ -4,8 +4,8 @@ services:
     image: safe-cash-service
     restart: always
     # container_name: cinema-admin_app
-    # environment:
-    #   - POSTGREST_DB_HOST=database
+    environment:
+      - POSTGREST_DB_HOST=database
     #   - POSTGREST_DB_PORT=5432
     #   - POSTGREST_DB_USER=user
     #   - POSTGREST_DB_PASSWORD=123456
