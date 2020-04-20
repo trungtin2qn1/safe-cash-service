@@ -2,9 +2,7 @@ FROM golang:1.14-alpine as builder
 WORKDIR /go/src/safe-cash-service
 COPY . .
 RUN apk add --update git make
-# RUN go get -u github.com/gin-gonic/gin
-# RUN go get -u github.com/Masterminds/glide
-# RUN glide install
+RUN echo $GO111MODULE
 RUN go mod vendor
 # RUN go get ./...
 RUN make build
