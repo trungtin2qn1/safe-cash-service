@@ -20,7 +20,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 
 ## Production env to use:
 
-`url`: `http://150.95.110.162:6000/`
+`url`: `http://35.198.235.51:6000/`
 
 ## APIs:
 

@@ -4,7 +4,6 @@ COPY . .
 RUN apk add --update git make
 RUN echo $GO111MODULE
 RUN go mod vendor
-# RUN go get ./...
 RUN make build
 
 FROM alpine:latest
