@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"safe-cash-service/models"
 	"safe-cash-service/service/user"
 
 	"github.com/gin-gonic/gin"
@@ -112,22 +111,33 @@ func GetInfo(c *gin.Context) {
 
 //UpdateInfo ...
 func UpdateInfo(c *gin.Context) {
-	//interfaceUserID, _ := c.Get("user_id")
-	//userID := fmt.Sprintf("%v", interfaceUserID)
+	// interfaceUserID, _ := c.Get("user_id")
+	// userID := fmt.Sprintf("%v", interfaceUserID)
 
-	newUserInfo := models.User{}
+	// newUserInfo := models.User{}
+	// err := c.ShouldBind(&newUserInfo)
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"message": "Data or data type is invalid",
+	// 	})
+	// 	return
+	// }
 
-	err := c.ShouldBind(&newUserInfo)
+	// userInfo, err := user.GetUserByID(userID)
+	// if err != nil {
+	// 	if err == gorm.ErrRecordNotFound {
+	// 		c.JSON(http.StatusBadRequest, gin.H{
+	// 			"message": "Data or data type is invalid",
+	// 		})
+	// 		return
+	// 	} else {
+	// 		c.JSON(http.StatusInternalServerError, gin.H{
+	// 			"message": "Server is busy",
+	// 		})
+	// 		return
+	// 	}
+	// }
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Data or data type is invalid",
-		})
-		return
-	}
-
-	//newUserInfo.ID = userID
-
-	c.JSON(200, newUserInfo)
+	// c.JSON(200, newUserInfo)
 
 }
