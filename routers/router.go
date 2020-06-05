@@ -1,7 +1,6 @@
 package routers
 
 import (
-	mediaController "safe-cash-service/controllers/media"
 	merchantController "safe-cash-service/controllers/merchant"
 	notificationController "safe-cash-service/controllers/notification"
 	userController "safe-cash-service/controllers/user"
@@ -29,7 +28,7 @@ func SetUpRouter() {
 
 		faceRecognition := services.Group("/face-recognition")
 		{
-			faceRecognition.GET("/user", userController.GeFromExternalService)
+			faceRecognition.GET("/user", userController.GetFromExternalService)
 		}
 	}
 
@@ -41,21 +40,22 @@ func SetUpRouter() {
 	{
 		auth.Use(middleware.VerifyJWTToken)
 		auth.POST("/register", userController.Register)
-		auth.GET("/self", userController.GetInfo)
-		auth.PUT("/self", userController.UpdateInfo)
-
-		media := auth.Group("/media")
+		self := auth.Group("/self")
 		{
-			media.POST("", mediaController.Upload)
+			self.GET("", userController.GetInfo)
+			self.PUT("", userController.UpdateInfo)
+			self.PUT("/password", userController.UpdatePassword)
 		}
+
+		auth.POST("/unlock", userController.Unlock)                                         // Not implemented yet
+		auth.GET("/notifications", userController.GetNotifications)                         // Not implemented yet
+		auth.GET("/unlock/logs", userController.ListUnlockingLogs)                          // Not implemented yet
+		auth.PUT("/notification/:notification_id", userController.UpdateNotificationStatus) // Not implemented yet
+		auth.GET("/staffs", merchantController.GetStaffsInStore)                            // Not implemented yet
+		auth.POST("/train-model")                                                           // Not implemented yet
 
 		auth.POST("/notification/token", notificationController.SaveToken)
 		auth.POST("/notification", notificationController.Send)
-
-		merchant := auth.Group("/merchant")
-		{
-			merchant.GET("/staffs", merchantController.GetStaffsInStore)
-		}
 	}
 
 	router.Run(":6000")

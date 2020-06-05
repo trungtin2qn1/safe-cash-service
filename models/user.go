@@ -11,6 +11,8 @@ type User struct {
 	FirstName   string     `json:"first_name,omitempty" form:"first_name,omitempty"`
 	LastName    string     `json:"last_name,omitempty" form:"last_name,omitempty"`
 	Position    int        `json:"position,omitempty" form:"position,omitempty"`
+	Role        string     `json:"role,omitempty" form:"role,omitempty"`
+	Avatar      string     `json:"avatar,omitempty" form:"avatar,omitempty"`
 	Token       string     `json:"token,omitempty" form:"token,omitempty" gorm:"-"`
 	StoreID     *string    `json:"store_id,omitempty" form:"store_id,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`

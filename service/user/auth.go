@@ -1,8 +1,10 @@
 package user
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"safe-cash-service/db"
 	"safe-cash-service/models"
 	"safe-cash-service/service/store"
 	"safe-cash-service/utils"
@@ -136,4 +138,57 @@ func RegisterPublic(email, password, storeName string) (models.User, models.Stor
 	user.Token = token
 
 	return user, storeInfo, err
+}
+
+//UpdatePasswordRequest ...
+type UpdatePasswordRequest struct {
+	ID          string `json:"id,omitempty" form:"id,omitempty"`
+	OldPassword string `json:"old_password,omitempty" form:"old_password,omitempty"`
+	NewPassword string `json:"new_password,omitempty" form:"new_password,omitempty"`
+}
+
+//UpdatePassword ...
+func UpdatePassword(req UpdatePasswordRequest) error {
+
+	if req.OldPassword == req.NewPassword {
+		return errors.New("Old password and new password can not be similar")
+	}
+
+	if len(req.NewPassword) < 6 {
+		return errors.New("Length of new passworld need to be larged than 6")
+	}
+
+	dbConn := db.GetDB()
+
+	user := models.User{}
+	res := dbConn.Where("id = ?", req.ID).Find(&user)
+	if res.Error != nil {
+		log.Println(res.Error)
+		return res.Error
+	}
+
+	check, err := utils.Compare(user.Password, req.OldPassword)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	if !check {
+		log.Println("Wrong password")
+		return errors.New("Wrong password")
+	}
+
+	newPassword, err := utils.Generate(req.NewPassword)
+	if err != nil {
+		return err
+	}
+
+	oldUser := user
+
+	user.Password = newPassword
+	err = updateInfo(dbConn, oldUser, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

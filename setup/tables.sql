@@ -64,7 +64,10 @@ CREATE TABLE users (
     password text,
     username text,
     position int,
+    role text,
+    avatar text,
     store_id bigint,
+    avatar text,
     foreign key (store_id) references stores(id)
 );
 
@@ -98,4 +101,54 @@ CREATE TABLE medias (
     deleted_at timestamp,
     link text,
     type int
+);
+
+--Create table notifications
+--Drop table notifications
+drop table if exists notifications;
+drop sequence if exists notifications_id_seq;
+CREATE SEQUENCE notifications_id_seq;
+
+CREATE TABLE notifications (
+    id bigint NOT NULL DEFAULT next_id('notifications_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    title text,
+    body text,
+    is_read boolean,
+    user_id bigint,
+    foreign key (user_id) references users(id)
+);
+
+--Create table unlocking_logs
+--Drop table unlocking_logs
+drop table if exists unlocking_logs;
+drop sequence if exists unlocking_logs_id_seq;
+CREATE SEQUENCE unlocking_logs_id_seq;
+
+CREATE TABLE unlocking_logs (
+    id bigint NOT NULL DEFAULT next_id('unlocking_logs_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    content text,
+    is_success boolean,
+    user_id bigint,
+    foreign key (user_id) references users(id)
+);
+
+--Create table user_login_logs
+--Drop table user_login_logs
+drop table if exists user_login_logs;
+drop sequence if exists user_login_logs_id_seq;
+CREATE SEQUENCE user_login_logs_id_seq;
+
+CREATE TABLE user_login_logs (
+    id bigint NOT NULL DEFAULT next_id('user_login_logs_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    user_id bigint,
+    foreign key (user_id) references users(id)
 );

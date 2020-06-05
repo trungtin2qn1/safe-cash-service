@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"safe-cash-service/models"
 	"safe-cash-service/service/user"
 
 	"github.com/gin-gonic/gin"
@@ -24,17 +25,10 @@ func RegisterPublic(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Server is busy",
+			"message": fmt.Sprintf("%s", err),
 		})
 		return
 	}
-
-	// res := display.AuthRes{}
-
-	// res.Token = user.Token
-	// user.Token = ""
-	// res.User = user
-	// res.Store = store
 
 	c.JSON(200, user)
 }
@@ -57,7 +51,7 @@ func Register(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Server is busy",
+			"message": fmt.Sprintf("%s", err),
 		})
 		return
 	}
@@ -76,15 +70,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	log.Println("authReq:", authReq)
-
 	user, err := user.Login(authReq.Email, authReq.Password)
-
-	log.Println("err:", err)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Server is busy",
+			"message": fmt.Sprintf("%s", err),
 		})
 		return
 	}
@@ -101,7 +91,7 @@ func GetInfo(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Server is busy",
+			"message": fmt.Sprintf("%s", err),
 		})
 		return
 	}
@@ -111,33 +101,57 @@ func GetInfo(c *gin.Context) {
 
 //UpdateInfo ...
 func UpdateInfo(c *gin.Context) {
-	// interfaceUserID, _ := c.Get("user_id")
-	// userID := fmt.Sprintf("%v", interfaceUserID)
+	interfaceUserID, _ := c.Get("user_id")
+	userID := fmt.Sprintf("%v", interfaceUserID)
 
-	// newUserInfo := models.User{}
-	// err := c.ShouldBind(&newUserInfo)
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"message": "Data or data type is invalid",
-	// 	})
-	// 	return
-	// }
+	newUserInfo := models.User{}
+	err := c.ShouldBind(&newUserInfo)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
 
-	// userInfo, err := user.GetUserByID(userID)
-	// if err != nil {
-	// 	if err == gorm.ErrRecordNotFound {
-	// 		c.JSON(http.StatusBadRequest, gin.H{
-	// 			"message": "Data or data type is invalid",
-	// 		})
-	// 		return
-	// 	} else {
-	// 		c.JSON(http.StatusInternalServerError, gin.H{
-	// 			"message": "Server is busy",
-	// 		})
-	// 		return
-	// 	}
-	// }
+	err = user.UpdateInfo(userID, newUserInfo)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
 
-	// c.JSON(200, newUserInfo)
+	c.JSON(200, newUserInfo)
+
+}
+
+//UpdatePassword ...
+func UpdatePassword(c *gin.Context) {
+	interfaceUserID, _ := c.Get("user_id")
+	userID := fmt.Sprintf("%v", interfaceUserID)
+
+	req := user.UpdatePasswordRequest{}
+
+	err := c.ShouldBind(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+
+	req.ID = userID
+	err = user.UpdatePassword(req)
+	log.Println("err outside:", err)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Success",
+	})
 
 }

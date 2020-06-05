@@ -5,6 +5,8 @@ import (
 	"log"
 	"safe-cash-service/db"
 	"safe-cash-service/models"
+
+	"github.com/jinzhu/gorm"
 )
 
 //CreateUser ...
@@ -68,4 +70,30 @@ func GetUsersByStoreID(storeID string) ([]models.User, error) {
 	}
 
 	return user, nil
+}
+
+//updateInfo ...
+func updateInfo(dbConn *gorm.DB, oldUserInfo models.User, newUserInfo models.User) error {
+
+	dbConn = dbConn.Model(&oldUserInfo).Where("id = ?", oldUserInfo.ID).Update(newUserInfo)
+	return dbConn.Error
+}
+
+//UpdateInfo ...
+func UpdateInfo(userID string, userInfo models.User) error {
+
+	dbConn := db.GetDB()
+
+	user := models.User{}
+	dbConn = dbConn.Where("id = ?", userID).Find(&user)
+	if dbConn.Error != nil {
+		log.Println(dbConn.Error)
+		return dbConn.Error
+	}
+
+	userInfo.ID = userID
+	userInfo.Password = user.Password
+	userInfo.Email = user.Email // Optional
+
+	return updateInfo(dbConn, user, userInfo)
 }

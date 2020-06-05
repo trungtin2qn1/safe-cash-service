@@ -2,7 +2,6 @@ package jwt
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"safe-cash-service/utils"
 	"time"
@@ -75,8 +74,5 @@ func VerificationToken(tokenString string) (string, string, error) {
 	if !ok {
 		return "", "", errors.New("invalid token")
 	}
-	fmt.Println("Claims id: ", claims.ID)
-	fmt.Println("Claims email: ", claims.Email)
-	fmt.Println("Claims store id:", claims.StoreID)
 	return claims.ID, claims.StoreID, err
 }

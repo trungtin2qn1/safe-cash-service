@@ -41,7 +41,7 @@ func GetStoreByName(name string) (models.Store, error) {
 
 	store := models.Store{}
 
-	res := dbConn.Where("name = ?", name).First(&store)
+	res := dbConn.Where("name = ?", name).Find(&store)
 	if res.Error != nil {
 		log.Println(res.Error)
 		return store, errors.New("Data or data type is invalid")
