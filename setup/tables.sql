@@ -32,6 +32,20 @@ END;
 $$ LANGUAGE plpgsql;
 --Generate new func insta5
 
+--Create table api_keys
+--Drop table api_keys
+drop table if exists api_keys;
+drop sequence if exists api_keys_id_seq;
+CREATE SEQUENCE api_keys_id_seq;
+
+CREATE TABLE api_keys (
+    id bigint NOT NULL DEFAULT next_id('api_keys_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    value text unique
+);
+
 --Create table stores
 --Drop table stores
 drop table if exists stores;
@@ -116,7 +130,7 @@ CREATE TABLE notifications (
     deleted_at timestamp,
     title text,
     body text,
-    is_read boolean,
+    is_read boolean DEFAULT false not null,
     user_id bigint,
     foreign key (user_id) references users(id)
 );

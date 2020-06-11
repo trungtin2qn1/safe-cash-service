@@ -47,12 +47,12 @@ func SetUpRouter() {
 			self.PUT("/password", userController.UpdatePassword)
 		}
 
-		auth.POST("/unlock", userController.Unlock)                                         // Not implemented yet
-		auth.GET("/notifications", userController.GetNotifications)                         // Not implemented yet
-		auth.GET("/unlock/logs", userController.ListUnlockingLogs)                          // Not implemented yet
-		auth.PUT("/notification/:notification_id", userController.UpdateNotificationStatus) // Not implemented yet
-		auth.GET("/staffs", merchantController.GetStaffsInStore)                            // Not implemented yet
-		auth.POST("/train-model")                                                           // Not implemented yet
+		auth.POST("/unlock", userController.Unlock)
+		auth.GET("/notifications", userController.GetNotifications)
+		auth.GET("/unlock/logs", userController.ListUnlockingLogs)
+		auth.PUT("/notification/:notification_id", userController.UpdateNotificationStatus)
+		auth.GET("/staffs", merchantController.GetStaffsInStore)
+		auth.POST("/train-model") // Not implemented yet
 
 		auth.POST("/notification/token", notificationController.SaveToken)
 		auth.POST("/notification", notificationController.Send)

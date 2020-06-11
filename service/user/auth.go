@@ -185,7 +185,7 @@ func UpdatePassword(req UpdatePasswordRequest) error {
 	oldUser := user
 
 	user.Password = newPassword
-	err = updateInfo(dbConn, oldUser, user)
+	err = updateInfo(dbConn, oldUser, &user)
 	if err != nil {
 		return err
 	}

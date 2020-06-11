@@ -73,14 +73,14 @@ func GetUsersByStoreID(storeID string) ([]models.User, error) {
 }
 
 //updateInfo ...
-func updateInfo(dbConn *gorm.DB, oldUserInfo models.User, newUserInfo models.User) error {
+func updateInfo(dbConn *gorm.DB, oldUserInfo models.User, newUserInfo *models.User) error {
 
 	dbConn = dbConn.Model(&oldUserInfo).Where("id = ?", oldUserInfo.ID).Update(newUserInfo)
 	return dbConn.Error
 }
 
 //UpdateInfo ...
-func UpdateInfo(userID string, userInfo models.User) error {
+func UpdateInfo(userID string, userInfo *models.User) error {
 
 	dbConn := db.GetDB()
 
@@ -96,4 +96,5 @@ func UpdateInfo(userID string, userInfo models.User) error {
 	userInfo.Email = user.Email // Optional
 
 	return updateInfo(dbConn, user, userInfo)
+
 }

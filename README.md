@@ -222,3 +222,267 @@ For porpose of education, you can check more detail in folder setup with docker 
     "updated_at": "2020-04-19T14:29:30.449654Z"
 }
 ```
+
+***Note: For using token prefix need to be "Tin " example: "Tin 12312321....."***
+
+7. **Get user info (self):**
+
+`URL`: `/apis/auth/self`
+
+`Method`: `GET`
+
+`Header`: 
+
+```json
+{
+    "Content-Type": "application/json",
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Response`:
+
+```json
+{
+    "id": "1579034362618319873",
+    "email": "trungtin2qn1@gmail.com",
+    "store_id": "1579034362618319875",
+    "created_at": "2020-06-05T23:15:21.94383Z",
+    "updated_at": "2020-06-06T00:29:10.506767Z"
+}
+```
+
+8. **Update user info (self):**
+
+`URL`: `/apis/auth/self`
+
+`Method`: `PUT`
+
+`Header`: 
+
+```json
+{
+    "Content-Type": "application/json",
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Response`:
+
+```json:
+{
+    "id": "1579034362618319873",
+    "email": "trungtin2qn1@gmail.com",
+    "phone_number": "123456789",
+    "first_name": "Tin",
+    "last_name": "Huynh"
+}
+```
+
+9. **Change password:**
+
+`URL`: `/apis/auth/self/password`
+
+`Method`: `PUT`
+
+`Header`: 
+
+```json
+{
+    "Content-Type": "application/json",
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Request`:
+
+```json
+{
+	"old_password": "1234567",
+	"new_password": "12345678"
+}
+```
+
+`Response:`
+
+```json
+{
+    "message": "Success"
+}
+```
+
+10. **Unlock smart withdrawal**
+
+`URL`: `/apis/auth/unlock`
+
+`Method`: `POST`
+
+`Header`: 
+
+```json
+{
+    "Content-Type": "application/json",
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Request`:
+
+```json
+{
+	"content": "Success in unlocking withdrawal",
+	"is_success": true
+}
+```
+
+`Response:`
+
+```json
+{
+    "id": "1583213810393551873",
+    "content": "Success in unlocking withdrawal",
+    "is_success": true,
+    "user_id": "1579034362618319873",
+    "created_at": "2020-06-11T17:39:10.868472977+07:00",
+    "updated_at": "2020-06-11T17:39:10.868472977+07:00"
+}
+```
+
+11. **List all unlocking logs filter by user or store:**
+
+`URL`: `/apis/auth/unlock/logs`
+
+`Method`: `GET`
+
+`Query`:
+
+```json
+{
+    "store_id": "1583213810393551873"
+}
+```
+
+`Header`: 
+
+```json
+{
+    "Content-Type": "application/json",
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Response:`
+
+```json
+[
+    {
+        "id": "1583213810393551873",
+        "content": "Success in unlocking withdrawal",
+        "is_success": true,
+        "user_id": "1579034362618319873",
+        "created_at": "2020-06-11T17:39:10.868473Z",
+        "updated_at": "2020-06-11T17:39:10.868473Z"
+    }
+]
+```
+
+12. **Get all notifications (self):**
+
+`URL`: `/apis/auth/unlock`
+
+`Method`: `GET`
+
+`Header`: 
+
+```json
+{
+    "Content-Type": "application/json",
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Response:`
+
+```json
+[
+    {
+        "id": "1583222308053455873",
+        "is_read": false,
+        "user_id": "1579034362618319873",
+        "created_at": "2020-06-11T17:56:03.485181Z",
+        "updated_at": "2020-06-11T17:56:03.485181Z"
+    },
+    {
+        "id": "1583222668763599874",
+        "is_read": false,
+        "user_id": "1579034362618319873",
+        "created_at": "2020-06-11T17:56:46.573809Z",
+        "updated_at": "2020-06-11T17:56:46.573809Z"
+    }
+]
+```
+
+13. **Update notification status:**
+
+`URL`: `/apis/auth/notification/:notification_id`
+
+`Method`: `POST`
+
+`Header`: 
+
+```json
+{
+    "Content-Type": "application/json",
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Param`:
+
+```json
+{
+    "notification_id": "1583222308053455873"
+}
+```
+
+`Response:`
+
+```json
+{
+    "message": "Success"
+}
+```
+
+1.  **Get all staffs in store (for merchant only)**
+
+`URL`: `/apis/auth/staffs`
+
+`Method`: `GET`
+
+`Header`: 
+
+```json
+{
+    "Content-Type": "application/json",
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Response:`
+
+```json
+[
+    {
+        "id": "1579034362618319873",
+        "email": "trungtin2qn1@gmail.com",
+        "phone_number": "123456789",
+        "first_name": "Tin",
+        "last_name": "Huynh",
+        "store_id": "1579034362618319875",
+        "created_at": "2020-06-05T23:15:21.94383Z",
+        "updated_at": "2020-06-11T17:31:21.107445Z"
+    }
+]
+```
+
+15. **Start train model process:** (Not implemented yet)

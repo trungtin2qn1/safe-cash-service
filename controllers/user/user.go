@@ -70,7 +70,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	user, err := user.Login(authReq.Email, authReq.Password)
+	userInfo, err := user.Login(authReq.Email, authReq.Password)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -79,7 +79,15 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, user)
+	_, err = user.CreateLoginLog(&userInfo.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	c.JSON(200, userInfo)
 }
 
 //GetInfo ...
@@ -113,7 +121,7 @@ func UpdateInfo(c *gin.Context) {
 		return
 	}
 
-	err = user.UpdateInfo(userID, newUserInfo)
+	err = user.UpdateInfo(userID, &newUserInfo)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
