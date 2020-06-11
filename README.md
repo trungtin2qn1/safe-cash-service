@@ -24,7 +24,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 
 ## APIs:
 
-1. Register:
+**1. Register:**
 
 `url`: `/apis/register`
 
@@ -61,7 +61,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-2. Login: 
+**2. Login: **
 
 `url`: `/apis/login`
 
@@ -98,7 +98,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-3. Upload media content:
+**3. Upload media content:**
 
 `url`: `/apis/auth/media`
 
@@ -129,7 +129,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-4. Save notification token:
+**4. Save notification token:**
 
 `url`: `/apis/auth/notification/token`
 
@@ -163,7 +163,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-5. Send notification:
+**5. Send notification:**
 
 `url`: `/apis/auth/notification`
 
@@ -186,7 +186,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-6. Add user for a store:
+**6. Add user for a store:**
 
 `url`: `/apis/auth/register`
 
@@ -225,7 +225,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 
 ***Note: For using token prefix need to be "Tin " example: "Tin 12312321....."***
 
-7. **Get user info (self):**
+**7. Get user info (self):**
 
 `URL`: `/apis/auth/self`
 
@@ -252,7 +252,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-8. **Update user info (self):**
+**8. Update user info (self):**
 
 `URL`: `/apis/auth/self`
 
@@ -279,7 +279,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-9. **Change password:**
+**9. Change password:**
 
 `URL`: `/apis/auth/self/password`
 
@@ -311,7 +311,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-10. **Unlock smart withdrawal**
+**10. Unlock smart withdrawal**
 
 `URL`: `/apis/auth/unlock`
 
@@ -348,7 +348,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-11. **List all unlocking logs filter by user or store:**
+**11. List all unlocking logs filter by user or store:**
 
 `URL`: `/apis/auth/unlock/logs`
 
@@ -386,7 +386,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 ]
 ```
 
-12. **Get all notifications (self):**
+**12. Get all notifications (self):**
 
 `URL`: `/apis/auth/unlock`
 
@@ -422,7 +422,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 ]
 ```
 
-13. **Update notification status:**
+**13. Update notification status:**
 
 `URL`: `/apis/auth/notification/:notification_id`
 
@@ -453,7 +453,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
-1.  **Get all staffs in store (for merchant only)**
+**14.  Get all staffs in store (for merchant only)**
 
 `URL`: `/apis/auth/staffs`
 
@@ -485,4 +485,4 @@ For porpose of education, you can check more detail in folder setup with docker 
 ]
 ```
 
-15. **Start train model process:** (Not implemented yet)
+**15. Start train model process: (Not implemented yet)**
