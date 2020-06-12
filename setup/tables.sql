@@ -46,6 +46,24 @@ CREATE TABLE api_keys (
     value text unique
 );
 
+--Create table admin_users
+--Drop table admin_users
+drop table if exists admin_users;
+drop sequence if exists admin_users_id_seq;
+CREATE SEQUENCE admin_users_id_seq;
+
+CREATE TABLE admin_users (
+    id bigint NOT NULL DEFAULT next_id('admin_users_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    email text unique,
+    first_name text,
+    last_name text,
+    password text,
+    last_login timestamp
+);
+
 --Create table stores
 --Drop table stores
 drop table if exists stores;
@@ -81,7 +99,6 @@ CREATE TABLE users (
     role text,
     avatar text,
     store_id bigint,
-    avatar text,
     foreign key (store_id) references stores(id)
 );
 
