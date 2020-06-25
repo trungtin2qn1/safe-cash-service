@@ -14,6 +14,7 @@ type User struct {
 	Role        string     `json:"role,omitempty" form:"role,omitempty"`
 	Avatar      string     `json:"avatar,omitempty" form:"avatar,omitempty"`
 	Token       string     `json:"token,omitempty" form:"token,omitempty" gorm:"-"`
+	RefreshToken string `json:"refresh_token,omitempty" form:"refresh_token,omitempty" gorm:"-"`
 	StoreID     *string    `json:"store_id,omitempty" form:"store_id,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`

@@ -17,3 +17,4 @@ logs/
 keys/
 deploy_key/
 static/
+.idea/

@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"safe-cash-service/utils/jwt"
 
@@ -18,17 +17,16 @@ func VerifyJWTToken(c *gin.Context) {
 		return
 	}
 	rawToken := string(token[len("Tin "):])
-	userID, storeID, err := jwt.VerificationToken(rawToken)
+	userID, storeID, email, err := jwt.VerificationToken(rawToken)
 	if err != nil {
-		//go utils.LogErrToFile(err.Error())
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": "Unauthorized",
 		})
 		return
 	}
-	fmt.Println(userID)
 	c.Set("user_id", userID)
 	c.Set("store_id", storeID)
+	c.Set("email", email)
 	c.Next()
 }
 

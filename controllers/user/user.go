@@ -70,10 +70,9 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	userInfo, err := user.Login(authReq.Email, authReq.Password)
-
+	userInfo, err := user.Login(authReq.Email, authReq.Password, authReq.StoreName)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusNotAcceptable, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})
 		return

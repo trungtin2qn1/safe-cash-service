@@ -1,0 +1,17 @@
+version: '3'
+services:
+  app:
+    image: tinincognito/smart-withdrawal-admin:latest
+    # restart: always
+    container_name: smart-withdrawal-admin
+    environment:
+    #   - POSTGREST_DB_HOST=database
+      - POSTGREST_DB_HOST=localhost
+      - POSTGREST_DB_PORT=5432
+      - POSTGREST_DB_USER=user
+      - POSTGREST_DB_PASSWORD=123456
+      - POSTGREST_DB_NAME=safe_smart_cash
+    # volumes:
+      
+    ports:
+      - "2000:2000"

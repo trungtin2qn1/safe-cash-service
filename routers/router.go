@@ -1,12 +1,12 @@
 package routers
 
 import (
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	merchantController "safe-cash-service/controllers/merchant"
 	notificationController "safe-cash-service/controllers/notification"
 	userController "safe-cash-service/controllers/user"
 	"safe-cash-service/middleware"
-
-	"github.com/gin-gonic/gin"
 )
 
 // User handler
@@ -17,6 +17,17 @@ import (
 //SetUpRouter ...
 func SetUpRouter() {
 	router := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+
+	router.Use(cors.New(config))
+
+	router.GET("/ping", func(c *gin.Context){
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
 
 	services := router.Group("/services")
 	{
@@ -35,6 +46,7 @@ func SetUpRouter() {
 	api := router.Group("/apis")
 	api.POST("/register", userController.RegisterPublic)
 	api.POST("/login", userController.Login)
+	api.POST("/access-token", userController.GetAccessToken)
 
 	auth := api.Group("/auth")
 	{
@@ -58,5 +70,8 @@ func SetUpRouter() {
 		auth.POST("/notification", notificationController.Send)
 	}
 
-	router.Run(":6000")
+	err := router.Run(":5000")
+	if err != nil {
+		panic(err)
+	}
 }

@@ -9,6 +9,7 @@ import (
 	"safe-cash-service/service/store"
 	"safe-cash-service/utils"
 	"safe-cash-service/utils/jwt"
+	"time"
 )
 
 //AuthReq ...
@@ -35,7 +36,7 @@ func checkAuthData(email string, password string) bool {
 }
 
 //Login ...
-func Login(email string, password string) (models.User, error) {
+func Login(email, password, storeName string) (models.User, error) {
 	user := models.User{}
 	var err error
 	if !(checkAuthData(email, password)) {
@@ -43,8 +44,12 @@ func Login(email string, password string) (models.User, error) {
 		return user, err
 	}
 
-	user, err = GetUserByEmail(email)
+	storeInfo, err := store.GetStoreByName(storeName)
+	if err != nil {
+		return user, err
+	}
 
+	user, err = GetUserByEmailAndStoreID(email, storeInfo.ID)
 	if err != nil {
 		err = fmt.Errorf("%s", "User is not available")
 		return user, err
@@ -62,17 +67,25 @@ func Login(email string, password string) (models.User, error) {
 		return user, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, "")
-	user.Token = token
+	if user.StoreID != nil {
+		token, err := jwt.IssueToken(user.ID, user.Email, *user.StoreID, time.Second * 86400)
+		if err != nil {
+			return user, err
+		}
+		user.Token = token
+
+		refreshToken, err := jwt.IssueToken(user.ID, user.Email, *user.StoreID, time.Second * 604800)
+		if err != nil {
+			return user, err
+		}
+		user.RefreshToken = refreshToken
+	}
 
 	return user, err
 }
 
 //Register ...
 func Register(email, password string, storeID *string) (models.User, error) {
-	//TODO:
-	// Get userid and store id from token
-
 	user := models.User{}
 	var err error
 	if !(checkAuthData(email, password)) {
@@ -95,8 +108,17 @@ func Register(email, password string, storeID *string) (models.User, error) {
 		return user, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, "")
+	token, err := jwt.IssueToken(user.ID, user.Email, *storeID, time.Second * 86400)
+	if err != nil {
+		return models.User{}, err
+	}
 	user.Token = token
+
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, *storeID, time.Second * 604800)
+	if err != nil{
+		return models.User{}, err
+	}
+	user.RefreshToken = refreshToken
 
 	return user, err
 }
@@ -128,14 +150,21 @@ func RegisterPublic(email, password, storeName string) (models.User, models.Stor
 	hashPwd, _ := utils.Generate(password)
 
 	user, err = CreateUser(email, hashPwd, "", "", "", 0, &storeInfo.ID)
-
 	if err != nil {
 		return user, storeInfo, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID)
-
+	token, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, time.Second * 86400)
+	if err != nil {
+		return user, storeInfo, err
+	}
 	user.Token = token
+
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, time.Second * 604800)
+	if err != nil {
+		return user, storeInfo, err
+	}
+	user.RefreshToken = refreshToken
 
 	return user, storeInfo, err
 }

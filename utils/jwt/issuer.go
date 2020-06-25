@@ -10,7 +10,7 @@ import (
 )
 
 //IssueToken ...
-func IssueToken(id, email, storeID string) (string, error) {
+func IssueToken(id, email, storeID string, duration time.Duration) (string, error) {
 	type ConsumerInfo struct {
 		ID      string `json:"id,omitempty"`
 		Email   string `json:"email,omitempty"`
@@ -18,7 +18,9 @@ func IssueToken(id, email, storeID string) (string, error) {
 		jwt.StandardClaims
 	}
 
-	expire := time.Now().Add(time.Second * 86400).Unix()
+	// time.Second * 86400: access Token
+	// time.Second * 604800: refresh Token
+	expire := time.Now().Add(duration).Unix()
 
 	// Create the Claims
 	claims := &ConsumerInfo{
@@ -49,7 +51,7 @@ func SignToken(claims jwt.Claims) (string, error) {
 }
 
 //VerificationToken ...
-func VerificationToken(tokenString string) (string, string, error) {
+func VerificationToken(tokenString string) (string, string, string, error) {
 	type ConsumerInfo struct {
 		ID      string `json:"id,omitempty"`
 		Email   string `json:"email,omitempty"`
@@ -67,12 +69,12 @@ func VerificationToken(tokenString string) (string, string, error) {
 
 	if err != nil {
 		go utils.LogErrToFile(err.Error())
-		return "", "", err
+		return "", "", "", err
 	}
 	claims, ok := token.Claims.(*ConsumerInfo)
 
 	if !ok {
-		return "", "", errors.New("invalid token")
+		return "", "", "", errors.New("invalid token")
 	}
-	return claims.ID, claims.StoreID, err
+	return claims.ID, claims.StoreID, claims.Email, err
 }

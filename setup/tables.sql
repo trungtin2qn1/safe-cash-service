@@ -75,7 +75,13 @@ CREATE TABLE stores (
     created_at timestamp,
     updated_at timestamp,
     deleted_at timestamp,
-    name text unique
+    name text unique,
+    country text not null,
+    state text not null,
+    city text not null,
+    district text,
+    ward text,
+    street text
 );
 
 --Create table users

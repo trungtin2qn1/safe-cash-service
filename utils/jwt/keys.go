@@ -3,11 +3,9 @@ package jwt
 import (
 	"crypto/rsa"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"io/ioutil"
 	"log"
-	"safe-cash-service/utils"
-
-	"github.com/dgrijalva/jwt-go"
 )
 
 var (
@@ -19,28 +17,28 @@ var (
 func LoadRSAKeys() {
 	signBytes, err := ioutil.ReadFile("./keys/key.rsa")
 	if nil != err {
-		go utils.LogErrToFile(err.Error())
+		//go utils.LogErrToFile(err.Error())
 		fmt.Println("Can't read private key")
 		log.Fatal(err)
 	}
 
 	signKey, err = jwt.ParseRSAPrivateKeyFromPEM(signBytes)
 	if nil != err {
-		go utils.LogErrToFile(err.Error())
+		//go utils.LogErrToFile(err.Error())
 		fmt.Println("Can't parse private key")
 		log.Fatal(err)
 	}
 
 	verifyBytes, err := ioutil.ReadFile("./keys/key.rsa.pub")
 	if nil != err {
-		go utils.LogErrToFile(err.Error())
+		//go utils.LogErrToFile(err.Error())
 		fmt.Println("Can't read public key")
 		log.Fatal(err)
 	}
 
 	verifyKey, err = jwt.ParseRSAPublicKeyFromPEM(verifyBytes)
 	if nil != err {
-		go utils.LogErrToFile(err.Error())
+		//go utils.LogErrToFile(err.Error())
 		fmt.Println("Can't parse public key")
 		log.Fatal(err)
 	}

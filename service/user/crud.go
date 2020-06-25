@@ -44,6 +44,20 @@ func GetUserByID(id string) (models.User, error) {
 	return user, nil
 }
 
+// GetUserByEmailAndStoreID ...
+func GetUserByEmailAndStoreID(email, storeID string) (models.User, error) {
+	dbConn := db.GetDB()
+
+	user := models.User{}
+	res := dbConn.Where("email = ? and store_id = ?", email, storeID).Find(&user)
+	if res.Error != nil {
+		log.Println(res.Error)
+		return user, errors.New("Data or data type is invalid")
+	}
+
+	return user, nil
+}
+
 // GetUserByEmail ...
 func GetUserByEmail(email string) (models.User, error) {
 	dbConn := db.GetDB()
