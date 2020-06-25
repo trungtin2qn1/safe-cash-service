@@ -14,4 +14,4 @@ services:
     container_name: safe-cash-service_server
 
     ports:
-      - "6000:6000"
+      - "5000:5000"

@@ -30,7 +30,7 @@ services:
       - database
 
     ports:
-      - "6000:6000"
+      - "5000:5000"
   
 networks:
   backend:

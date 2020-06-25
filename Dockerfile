@@ -12,4 +12,4 @@ WORKDIR /
 COPY --from=builder /go/src/safe-cash-service/safe-cash-service ./safe-cash-service
 COPY --from=builder /go/src/safe-cash-service/keys ./keys
 CMD ["/safe-cash-service"]
-EXPOSE 6000
+EXPOSE 5000
