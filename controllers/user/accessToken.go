@@ -21,7 +21,7 @@ func GetAccessToken(c *gin.Context){
 	}
 
 	rawToken := string(req.RefreshToken[len("Tin "):])
-	userID, storeID, email, err := jwt.VerificationToken(rawToken)
+	userID, email, err := jwt.VerificationToken(rawToken)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -37,7 +37,7 @@ func GetAccessToken(c *gin.Context){
 		return
 	}
 
-	refreshToken, err := jwt.IssueToken(userID, email, storeID, time.Second * 604800)
+	refreshToken, err := jwt.IssueToken(userID, email, time.Second * 604800)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -45,7 +45,7 @@ func GetAccessToken(c *gin.Context){
 		return
 	}
 
-	accessToken, err := jwt.IssueToken(userID, email, storeID, time.Second * 86400)
+	accessToken, err := jwt.IssueToken(userID, email, time.Second * 86400)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),

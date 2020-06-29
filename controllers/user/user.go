@@ -10,6 +10,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//RegisterPublicV1 ...
+func RegisterPublicV1(c *gin.Context) {
+	authReq := user.AuthReq{}
+	err := c.ShouldBind(&authReq)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+
+	user, err := user.RegisterPublicV1(authReq.Email, authReq.Password)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	c.JSON(200, user)
+}
+
 //RegisterPublic ...
 func RegisterPublic(c *gin.Context) {
 	authReq := user.AuthReq{}
@@ -35,8 +58,9 @@ func RegisterPublic(c *gin.Context) {
 
 // Register ...
 func Register(c *gin.Context) {
-	interfaceStoreID, _ := c.Get("store_id")
-	storeID := fmt.Sprintf("%v", interfaceStoreID)
+	interfaceUserID, _ := c.Get("user_id")
+	//storeID := fmt.Sprintf("%v", interfaceStoreID)
+	userID := fmt.Sprintf("$v", interfaceUserID)
 
 	authReq := user.AuthReq{}
 	err := c.ShouldBind(&authReq)
@@ -47,8 +71,38 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	user, err := user.Register(authReq.Email, authReq.Password, &storeID)
+	user, err := user.RegisterForOwner(authReq.Email, authReq.Password, userID, authReq.StoreID)
 
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable , gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	c.JSON(200, user)
+}
+
+// LoginV1 ...
+func LoginV1(c *gin.Context) {
+	authReq := user.AuthReq{}
+	err := c.ShouldBind(&authReq)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+
+	userInfo, err := user.LoginV1(authReq.Email, authReq.Password)
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	_, err = user.CreateLoginLog(&userInfo.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -56,7 +110,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, user)
+	c.JSON(200, userInfo)
 }
 
 // Login ...

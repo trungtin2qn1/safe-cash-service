@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	merchantController "safe-cash-service/controllers/merchant"
 	notificationController "safe-cash-service/controllers/notification"
+	storeController "safe-cash-service/controllers/store"
 	userController "safe-cash-service/controllers/user"
 	"safe-cash-service/middleware"
 )
@@ -43,10 +44,21 @@ func SetUpRouter() {
 		}
 	}
 
+	v1 := router.Group("/v1")
+	{
+		api := v1.Group("/apis")
+		{
+			api.POST("/register", userController.RegisterPublicV1)
+			api.POST("/login", userController.LoginV1)
+		}
+	}
+
 	api := router.Group("/apis")
-	api.POST("/register", userController.RegisterPublic)
-	api.POST("/login", userController.Login)
-	api.POST("/access-token", userController.GetAccessToken)
+	{
+		api.POST("/register", userController.RegisterPublic)
+		api.POST("/login", userController.Login)
+		api.POST("/access-token", userController.GetAccessToken)
+	}
 
 	auth := api.Group("/auth")
 	{
@@ -59,6 +71,9 @@ func SetUpRouter() {
 			self.PUT("/password", userController.UpdatePassword)
 		}
 
+		auth.GET("/register-merchant", storeController.GetRegisterMerchantRequest)
+		auth.POST("/register-merchant", storeController.RegisterMerchant)
+		auth.GET("/stores", storeController.GetAllStoresByUserID)
 		auth.POST("/unlock", userController.Unlock)
 		auth.GET("/notifications", userController.GetNotifications)
 		auth.GET("/unlock/logs", userController.ListUnlockingLogs)

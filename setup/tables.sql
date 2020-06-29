@@ -81,7 +81,8 @@ CREATE TABLE stores (
     city text not null,
     district text,
     ward text,
-    street text
+    street text,
+    image text
 );
 
 --Create table users
@@ -106,6 +107,46 @@ CREATE TABLE users (
     avatar text,
     store_id bigint,
     foreign key (store_id) references stores(id)
+);
+
+--Create table store_junction_users
+--Drop table store_junction_users
+drop table if exists store_junction_users;
+drop sequence if exists store_junction_users_id_seq;
+CREATE SEQUENCE store_junction_users_id_seq;
+
+CREATE TABLE store_junction_users (
+    id bigint NOT NULL DEFAULT next_id('store_junction_users_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    role text,
+    user_id bigint,
+    store_id bigint,
+    foreign key (user_id) references users(id),
+    foreign key (store_id) references stores(id)
+);
+
+--Create table register_merchants
+--Drop table register_merchants
+drop table if exists register_merchants;
+drop sequence if exists register_merchants_id_seq;
+CREATE SEQUENCE register_merchants_id_seq;
+
+CREATE TABLE register_merchants (
+    id bigint NOT NULL DEFAULT next_id('register_merchants_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    content text,
+    email text,
+    name text,
+    user_address text,
+    store_name text,
+    store_address text,
+    status smallint,
+    user_id bigint,
+    foreign key (user_id) references users(id)
 );
 
 --Create table notification_tokens

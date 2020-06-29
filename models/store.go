@@ -15,4 +15,5 @@ type Store struct {
 	District string `json:"district"`
 	Ward string `json:"ward"`
 	Street string `json:"street"`
+	Image string `json:"image"`
 }
