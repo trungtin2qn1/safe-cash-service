@@ -19,6 +19,8 @@ type AuthReq struct {
 	Password  string `json:"password,omitempty"`
 	StoreName string `json:"store_name,omitempty"`
 	StoreID string `json:"store_id,omitempty"`
+	FirstName string `json:"first_name,omitempty"`
+	LastName string `json:"last_name,omitempty"`
 }
 
 func checkAuthData(email string, password string) bool {
@@ -217,7 +219,7 @@ func RegisterForOwner(email, password, userID, storeID string) (models.User, err
 //}
 
 //RegisterPublicV1 ...
-func RegisterPublicV1(email, password string) (models.User, error) {
+func RegisterPublicV1(email, password, firstName, lastName string) (models.User, error) {
 	user := models.User{}
 	var err error
 	if !(checkAuthData(email, password)) {
@@ -233,7 +235,7 @@ func RegisterPublicV1(email, password string) (models.User, error) {
 
 	hashPwd, _ := utils.Generate(password)
 
-	user, err = CreateUser(email, hashPwd, "", "", "", 0, nil)
+	user, err = CreateUser(email, hashPwd, "", firstName, lastName, 0, nil)
 	if err != nil {
 		return user, err
 	}

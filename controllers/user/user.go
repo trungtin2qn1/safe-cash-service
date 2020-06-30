@@ -21,7 +21,7 @@ func RegisterPublicV1(c *gin.Context) {
 		return
 	}
 
-	user, err := user.RegisterPublicV1(authReq.Email, authReq.Password)
+	user, err := user.RegisterPublicV1(authReq.Email, authReq.Password, authReq.FirstName, authReq.LastName)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
