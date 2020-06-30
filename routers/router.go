@@ -23,6 +23,7 @@ func SetUpRouter() {
 	config.AllowAllOrigins = true
 
 	router.Use(cors.New(config))
+	router.Use(middleware.CORSMiddleware())
 
 	router.GET("/ping", func(c *gin.Context){
 		c.JSON(200, gin.H{
