@@ -189,6 +189,7 @@ func GetInfo(c *gin.Context) {
 		Token: user.Token,
 		RefreshToken: user.RefreshToken,
 		PhoneNumber: user.PhoneNumber,
+		Email: user.Email,
 	}
 
 	c.JSON(200, userDisplay)
