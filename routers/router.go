@@ -8,6 +8,7 @@ import (
 	storeController "safe-cash-service/controllers/store"
 	userController "safe-cash-service/controllers/user"
 	"safe-cash-service/middleware"
+	"time"
 )
 
 // User handler
@@ -19,11 +20,19 @@ import (
 func SetUpRouter() {
 	router := gin.Default()
 
-	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true
+	//config := cors.DefaultConfig()
+	//config.AllowAllOrigins = true
 
-	router.Use(cors.New(config))
-	router.Use(middleware.CORSMiddleware())
+	routerConfig := cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:     []string{"X-Requested-With", "Authorization", "Origin", "Content-Length", "Content-Type"},
+		AllowCredentials: false,
+		MaxAge:           12 * time.Hour,
+	}
+
+	router.Use(cors.New(routerConfig))
+	//router.Use(middleware.CORSMiddleware())
 
 	router.GET("/ping", func(c *gin.Context){
 		c.JSON(200, gin.H{
@@ -61,6 +70,8 @@ func SetUpRouter() {
 		api.POST("/access-token", userController.GetAccessToken)
 	}
 
+	//api.Use(middleware.CORSMiddleware())
+
 	auth := api.Group("/auth")
 	{
 		auth.Use(middleware.VerifyJWTToken)
@@ -85,6 +96,8 @@ func SetUpRouter() {
 		auth.POST("/notification/token", notificationController.SaveToken)
 		auth.POST("/notification", notificationController.Send)
 	}
+
+	//auth.Use(middleware.CORSMiddleware())
 
 	err := router.Run(":5000")
 	if err != nil {
