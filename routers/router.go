@@ -83,6 +83,7 @@ func SetUpRouter() {
 			self.PUT("/password", userController.UpdatePassword)
 		}
 
+		auth.GET("/store/:store_id", storeController.GetByID)
 		auth.GET("/register-merchant", storeController.GetRegisterMerchantRequest)
 		auth.POST("/register-merchant", storeController.RegisterMerchant)
 		auth.GET("/stores", storeController.GetAllStoresByUserID)

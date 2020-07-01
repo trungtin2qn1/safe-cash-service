@@ -6,11 +6,12 @@ import (
 )
 
 //CreateUnlockingLog ...
-func CreateUnlockingLog(content string, isSuccess bool, userID *string) (models.UnlockingLog, error) {
+func CreateUnlockingLog(content, method string, isSuccess bool, userID *string) (models.UnlockingLog, error) {
 	unlockingLog := models.UnlockingLog{
 		Content:   content,
 		IsSuccess: &isSuccess,
 		UserID:    userID,
+		Method:    method,
 	}
 
 	dbConn := db.GetDB()

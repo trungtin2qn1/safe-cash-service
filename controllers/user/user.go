@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"safe-cash-service/display"
 	"safe-cash-service/models"
+	storeService "safe-cash-service/service/store"
 	"safe-cash-service/service/user"
 
 	"github.com/gin-gonic/gin"
@@ -157,7 +159,39 @@ func GetInfo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, user)
+
+	storeID := ""
+	storeName := ""
+
+	if user.StoreID != nil {
+		storeID = *user.StoreID
+
+		store, err := storeService.GetStoreByID(storeID)
+		if err != nil {
+			c.JSON(http.StatusNotAcceptable, gin.H{
+				"message": fmt.Sprintf("%s", err),
+			})
+			return
+		}
+		storeID = store.ID
+		storeName = store.Name
+	}
+
+	userDisplay := display.User{
+		ID: user.ID,
+		StoreID: &storeID,
+		StoreName: storeName,
+		FirstName: user.FirstName,
+		LastName: user.LastName,
+		Position: user.Position,
+		Role: user.Role,
+		Avatar: user.Avatar,
+		Token: user.Token,
+		RefreshToken: user.RefreshToken,
+		PhoneNumber: user.PhoneNumber,
+	}
+
+	c.JSON(200, userDisplay)
 }
 
 //UpdateInfo ...

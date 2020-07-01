@@ -211,6 +211,7 @@ CREATE TABLE unlocking_logs (
     updated_at timestamp,
     deleted_at timestamp,
     content text,
+    method text,
     is_success boolean,
     user_id bigint,
     foreign key (user_id) references users(id)

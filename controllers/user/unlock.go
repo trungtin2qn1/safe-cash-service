@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"safe-cash-service/display"
 	"safe-cash-service/models"
 	"safe-cash-service/service/notification"
+	"safe-cash-service/service/storejunctionuser"
 	"safe-cash-service/service/unlockinglog"
 	"safe-cash-service/service/user"
 
@@ -36,7 +38,7 @@ func Unlock(c *gin.Context) {
 	}
 
 	//Create unlocking log
-	unlockingLogInfo, err := unlockinglog.CreateUnlockingLog(unlockingLog.Content, *unlockingLog.IsSuccess, &userInfo.ID)
+	unlockingLogInfo, err := unlockinglog.CreateUnlockingLog(unlockingLog.Content, unlockingLog.Method, *unlockingLog.IsSuccess, &userInfo.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -77,6 +79,7 @@ func ListUnlockingLogs(c *gin.Context) {
 
 	storeID := c.Query("store_id")
 
+	unlockingLogsDisplay := []display.UnlockingLog{}
 	unlockingLogs := []models.UnlockingLog{}
 
 	userInfo, err := user.GetUserByID(userID)
@@ -89,11 +92,14 @@ func ListUnlockingLogs(c *gin.Context) {
 
 	if storeID != "" {
 
-		if *userInfo.StoreID != storeID {
-			c.JSON(http.StatusServiceUnavailable, gin.H{
-				"message": "User don't belong to this store",
-			})
-			return
+		storeJunctionUser, err := storejunctionuser.GetStoreJunctionUserByUserIDAndStoreID(userID, storeID)
+		if err != nil || storeJunctionUser.ID == "" {
+			if *userInfo.StoreID != storeID {
+				c.JSON(http.StatusServiceUnavailable, gin.H{
+					"message": "User don't belong to this store",
+				})
+				return
+			}
 		}
 
 		users, err := user.GetUsersByStoreID(storeID)
@@ -122,5 +128,21 @@ func ListUnlockingLogs(c *gin.Context) {
 		}
 	}
 
-	c.JSON(200, unlockingLogs)
+	for _, v := range unlockingLogs {
+
+		userInfo, err := user.GetUserByID(*v.UserID)
+		if err != nil {
+			continue
+		}
+
+		unlockingLogDisplay := display.UnlockingLog{
+			UnlockingLog: v,
+			FirstName: userInfo.FirstName,
+			LastName: userInfo.LastName,
+		}
+
+		unlockingLogsDisplay = append(unlockingLogsDisplay, unlockingLogDisplay)
+	}
+
+	c.JSON(200, unlockingLogsDisplay)
 }

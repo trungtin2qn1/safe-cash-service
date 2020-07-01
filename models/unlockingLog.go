@@ -6,6 +6,7 @@ import "time"
 type UnlockingLog struct {
 	ID        string     `json:"id,omitempty" form:"id,omitempty"`
 	Content   string     `json:"content" form:"content"`
+	Method    string `json:"method" form:"method"`
 	IsSuccess *bool      `json:"is_success" form:"is_success"`
 	UserID    *string    `json:"user_id" form:"user_id"`
 	CreatedAt *time.Time `json:"created_at,omitempty"`
