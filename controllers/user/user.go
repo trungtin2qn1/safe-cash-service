@@ -151,7 +151,7 @@ func GetInfo(c *gin.Context) {
 	user, err := user.GetUserByID(userID)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusNotAcceptable, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})
 		return

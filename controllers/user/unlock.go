@@ -59,7 +59,7 @@ func Unlock(c *gin.Context) {
 			}
 		}
 
-		_, err = notification.Create("", "", &userID)
+		_, err = notification.Create("Có ai đó đã cố mở khóa", unlockingLog.Content, &userID)
 		if err != nil {
 			log.Println(err)
 			return
