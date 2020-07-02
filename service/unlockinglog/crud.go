@@ -26,7 +26,9 @@ func GetUnlockingLogsByUserID(userID string) ([]models.UnlockingLog, error) {
 	res := []models.UnlockingLog{}
 
 	dbConn := db.GetDB()
-	dbConn = dbConn.Where("user_id = ?", userID).Find(&res)
+	dbConn = dbConn.
+		Order("id desc").
+		Where("user_id = ?", userID).Find(&res)
 
 	return res, nil
 }

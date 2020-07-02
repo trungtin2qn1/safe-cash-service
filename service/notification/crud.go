@@ -37,7 +37,10 @@ func GetByUserID(userID string) ([]models.Notification, error) {
 
 	dbConn := db.GetDB()
 
-	dbConn = dbConn.Where("user_id = ?", userID).Find(&notifications)
+	dbConn = dbConn.
+		Order("id desc").
+		Where("user_id = ?", userID).
+		Find(&notifications)
 
 	return notifications, dbConn.Error
 }
