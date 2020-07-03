@@ -13,11 +13,21 @@ func GetNotifications(c *gin.Context) {
 	interfaceUserID, _ := c.Get("user_id")
 	userID := fmt.Sprintf("%v", interfaceUserID)
 
-	notifications, err := notification.GetByUserID(userID)
+	support := &notification.GetSupport{}
+	err := c.ShouldBindQuery(&support)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	notifications, err := notification.GetByUserID(userID, *support)
+	if err != nil && len(notifications) != 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})
+		return
 	}
 
 	c.JSON(200, notifications)

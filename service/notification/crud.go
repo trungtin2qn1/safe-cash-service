@@ -31,13 +31,17 @@ func Create(title, body string, userID *string) (models.Notification, error) {
 }
 
 //GetByUserID ...
-func GetByUserID(userID string) ([]models.Notification, error) {
+func GetByUserID(userID string, support GetSupport) ([]models.Notification, error) {
 
 	notifications := []models.Notification{}
 
 	dbConn := db.GetDB()
 
+	support.getDefault()
+
 	dbConn = dbConn.
+		Offset(support.Offset).
+		Limit(support.Limit).
 		Order("id desc").
 		Where("user_id = ?", userID).
 		Find(&notifications)
@@ -55,4 +59,22 @@ func GetByID(id string) (models.Notification, error) {
 	dbConn = dbConn.Where("id = ?", id).Find(&notifications)
 
 	return notifications, dbConn.Error
+}
+
+//GetSupport ...
+type GetSupport struct{
+	Offset int `json:"offset,omitempty" form:"offset,omitempty"`
+	Limit int `json:"limit,omitempty" form:"limit,omitempty"`
+}
+
+//getDefault ...
+func (support *GetSupport) getDefault() {
+
+	if support.Offset == -1 {
+		support.Offset = 0
+	}
+
+	if support.Limit <= 0 {
+		support.Limit = 15
+	}
 }
