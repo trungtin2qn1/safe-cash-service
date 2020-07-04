@@ -1,35 +1,19 @@
 CREATE OR REPLACE FUNCTION next_id(OUT result bigint, seq text) AS $$
 DECLARE
-    our_epoch bigint := 1314220021721;
+    our_epoch bigint := 13142200;
     seq_id bigint;
     now_millis bigint;
     shard_id int := 5;
 BEGIN
     SELECT nextval(seq) % 1024 INTO seq_id;
     SELECT FLOOR(EXTRACT(EPOCH FROM clock_timestamp())) INTO now_millis;
-    result := (now_millis - our_epoch)*1000 << 23;
-    result := result | (shard_id <<10);
+    result := (now_millis - our_epoch)/1000 << 10;
+    result := result | (shard_id <<5);
     result := result | (seq_id);
     
 END;
     $$ LANGUAGE PLPGSQL;
 
-
-CREATE OR REPLACE FUNCTION convertTVkdau (x text) RETURNS text AS
-$$
-DECLARE
- cdau text; kdau text; r text;
-BEGIN
- cdau = 'áàảãạâấầẩẫậăắằẳẵặđéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵÁÀẢÃẠÂẤẦẨẪẬĂẮẰẲẴẶĐÉÈẺẼẸÊẾỀỂỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤƯỨỪỬỮỰÝỲỶỸỴ';
- kdau = 'aaaaaaaaaaaaaaaaadeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyaaaaaaaaaaaaaaaaadeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyy';
- r = x;
- FOR i IN 0..length(cdau)
- LOOP
- r = replace(r, substr(cdau,i,1), substr(kdau,i,1));
- END LOOP;
- RETURN r;
-END;
-$$ LANGUAGE plpgsql;
 --Generate new func insta5
 
 --Create table api_keys
