@@ -48,6 +48,21 @@ CREATE TABLE admin_users (
     last_login timestamp
 );
 
+--Create table work_spaces
+--Drop table work_spaces
+drop table if exists work_spaces;
+drop sequence if exists work_spaces_id_seq;
+CREATE SEQUENCE work_spaces_id_seq;
+
+CREATE TABLE work_spaces (
+    id bigint NOT NULL DEFAULT next_id('work_spaces_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    name text unique,
+    image text
+);
+
 --Create table stores
 --Drop table stores
 drop table if exists stores;
@@ -66,7 +81,9 @@ CREATE TABLE stores (
     district text,
     ward text,
     street text,
-    image text
+    image text,
+    wp_id bigint,
+    foreign key (wp_id) references work_spaces(id)
 );
 
 --Create table users

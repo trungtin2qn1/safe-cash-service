@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"safe-cash-service/constants"
 	"safe-cash-service/db"
 	"safe-cash-service/models"
 	"safe-cash-service/service/store"
@@ -18,9 +19,10 @@ type AuthReq struct {
 	Email     string `json:"email,omitempty"`
 	Password  string `json:"password,omitempty"`
 	StoreName string `json:"store_name,omitempty"`
-	StoreID string `json:"store_id,omitempty"`
+	StoreID   string `json:"store_id,omitempty"`
 	FirstName string `json:"first_name,omitempty"`
-	LastName string `json:"last_name,omitempty"`
+	LastName  string `json:"last_name,omitempty"`
+	Role      string `json:"role,omitempty"`
 }
 
 func checkAuthData(email string, password string) bool {
@@ -66,13 +68,13 @@ func LoginV1(email, password string) (models.User, error) {
 		return user, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, time.Second * 86400)
+	token, err := jwt.IssueToken(user.ID, user.Email, time.Second*86400)
 	if err != nil {
 		return user, err
 	}
 	user.Token = token
 
-	refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second * 604800)
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second*604800)
 	if err != nil {
 		return user, err
 	}
@@ -95,7 +97,7 @@ func Login(email, password, storeName string) (models.User, error) {
 		return user, err
 	}
 
-	user, err = GetUserByEmailAndStoreID(email, storeInfo.ID)
+	user, err = GetUserByEmail(email)
 	if err != nil {
 		err = fmt.Errorf("%s", "User is not available")
 		return user, err
@@ -113,25 +115,29 @@ func Login(email, password, storeName string) (models.User, error) {
 		return user, err
 	}
 
-	if user.StoreID != nil {
-		token, err := jwt.IssueToken(user.ID, user.Email, time.Second * 86400)
-		if err != nil {
-			return user, err
-		}
-		user.Token = token
-
-		refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second * 604800)
-		if err != nil {
-			return user, err
-		}
-		user.RefreshToken = refreshToken
+	_, err = storejunctionuser.GetStoreJunctionUserByUserIDAndStoreID(user.ID, storeInfo.ID)
+	if err != nil {
+		err = fmt.Errorf("%s", "You don't have permission in this store")
+		return user, err
 	}
+
+	token, err := jwt.IssueToken(user.ID, user.Email, time.Second*86400)
+	if err != nil {
+		return user, err
+	}
+	user.Token = token
+
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second*604800)
+	if err != nil {
+		return user, err
+	}
+	user.RefreshToken = refreshToken
 
 	return user, err
 }
 
 //RegisterForOwner ...
-func RegisterForOwner(email, password, userID, storeID string) (models.User, error) {
+func RegisterForOwner(email, password, userID, storeID, role string) (models.User, error) {
 	user := models.User{}
 	var err error
 	if !(checkAuthData(email, password)) {
@@ -145,6 +151,20 @@ func RegisterForOwner(email, password, userID, storeID string) (models.User, err
 		return user, err
 	}
 
+	if role == constants.STAFF {
+		if storeJunctionUser.Role != constants.MANAGER && storeJunctionUser.Role != constants.OWNER {
+			err = fmt.Errorf("%s", "You don't have permission to execute this activity")
+			return user, err
+		}
+	}
+
+	if role == constants.MANAGER {
+		if storeJunctionUser.Role != constants.OWNER {
+			err = fmt.Errorf("%s", "You don't have permission to execute this activity")
+			return user, err
+		}
+	}
+
 	user, err = GetUserByEmail(email)
 	if user.ID != "" {
 		err = fmt.Errorf("%s", "User is not available")
@@ -152,26 +172,29 @@ func RegisterForOwner(email, password, userID, storeID string) (models.User, err
 	}
 
 	hashPwd, _ := utils.Generate(password)
-
 	if storeID != "" {
 		user, err = CreateUser(email, hashPwd, "", "", "", 0, &storeID)
 	} else {
 		user, err = CreateUser(email, hashPwd, "", "", "", 0, nil)
 	}
 
-
 	if err != nil {
 		return user, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, time.Second * 86400)
+	_, err = storejunctionuser.CreateStoreJunctionUser(role, &userID, &storeID)
+	if err != nil {
+		return user, err
+	}
+
+	token, err := jwt.IssueToken(user.ID, user.Email, time.Second*86400)
 	if err != nil {
 		return models.User{}, err
 	}
 	user.Token = token
 
-	refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second * 604800)
-	if err != nil{
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second*604800)
+	if err != nil {
 		return models.User{}, err
 	}
 	user.RefreshToken = refreshToken
@@ -232,7 +255,6 @@ func RegisterPublicV1(email, password, firstName, lastName string) (models.User,
 		return user, errors.New("Email has been used")
 	}
 
-
 	hashPwd, _ := utils.Generate(password)
 
 	user, err = CreateUser(email, hashPwd, "", firstName, lastName, 0, nil)
@@ -240,13 +262,13 @@ func RegisterPublicV1(email, password, firstName, lastName string) (models.User,
 		return user, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, time.Second * 86400)
+	token, err := jwt.IssueToken(user.ID, user.Email, time.Second*86400)
 	if err != nil {
 		return user, err
 	}
 	user.Token = token
 
-	refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second * 604800)
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second*604800)
 	if err != nil {
 		return user, err
 	}
@@ -291,13 +313,18 @@ func RegisterPublic(email, password, storeName string) (models.User, models.Stor
 		return user, storeInfo, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, time.Second * 86400)
+	_, err = storejunctionuser.CreateStoreJunctionUser(constants.OWNER, &user.ID, &storeInfo.ID)
+	if err != nil {
+		return user, storeInfo, err
+	}
+
+	token, err := jwt.IssueToken(user.ID, user.Email, time.Second*86400)
 	if err != nil {
 		return user, storeInfo, err
 	}
 	user.Token = token
 
-	refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second * 604800)
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, time.Second*604800)
 	if err != nil {
 		return user, storeInfo, err
 	}

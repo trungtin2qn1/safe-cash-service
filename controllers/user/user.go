@@ -61,8 +61,7 @@ func RegisterPublic(c *gin.Context) {
 // Register ...
 func Register(c *gin.Context) {
 	interfaceUserID, _ := c.Get("user_id")
-	//storeID := fmt.Sprintf("%v", interfaceStoreID)
-	userID := fmt.Sprintf("$v", interfaceUserID)
+	userID := fmt.Sprintf("%v", interfaceUserID)
 
 	authReq := user.AuthReq{}
 	err := c.ShouldBind(&authReq)
@@ -73,10 +72,10 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	user, err := user.RegisterForOwner(authReq.Email, authReq.Password, userID, authReq.StoreID)
+	user, err := user.RegisterForOwner(authReq.Email, authReq.Password, userID, authReq.StoreID, authReq.Role)
 
 	if err != nil {
-		c.JSON(http.StatusNotAcceptable , gin.H{
+		c.JSON(http.StatusNotAcceptable, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})
 		return
@@ -159,7 +158,6 @@ func GetInfo(c *gin.Context) {
 		return
 	}
 
-
 	storeID := ""
 	storeName := ""
 
@@ -178,18 +176,18 @@ func GetInfo(c *gin.Context) {
 	}
 
 	userDisplay := display.User{
-		ID: user.ID,
-		StoreID: &storeID,
-		StoreName: storeName,
-		FirstName: user.FirstName,
-		LastName: user.LastName,
-		Position: user.Position,
-		Role: user.Role,
-		Avatar: user.Avatar,
-		Token: user.Token,
+		ID:           user.ID,
+		StoreID:      &storeID,
+		StoreName:    storeName,
+		FirstName:    user.FirstName,
+		LastName:     user.LastName,
+		Position:     user.Position,
+		Role:         user.Role,
+		Avatar:       user.Avatar,
+		Token:        user.Token,
 		RefreshToken: user.RefreshToken,
-		PhoneNumber: user.PhoneNumber,
-		Email: user.Email,
+		PhoneNumber:  user.PhoneNumber,
+		Email:        user.Email,
 	}
 
 	c.JSON(200, userDisplay)
