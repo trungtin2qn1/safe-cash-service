@@ -7,33 +7,11 @@ import (
 	"safe-cash-service/display"
 	"safe-cash-service/models"
 	storeService "safe-cash-service/service/store"
+	"safe-cash-service/service/storejunctionuser"
 	"safe-cash-service/service/user"
 
 	"github.com/gin-gonic/gin"
 )
-
-//RegisterPublicV1 ...
-func RegisterPublicV1(c *gin.Context) {
-	authReq := user.AuthReq{}
-	err := c.ShouldBind(&authReq)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Data or data type is invalid",
-		})
-		return
-	}
-
-	user, err := user.RegisterPublicV1(authReq.Email, authReq.Password, authReq.FirstName, authReq.LastName)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": fmt.Sprintf("%s", err),
-		})
-		return
-	}
-
-	c.JSON(200, user)
-}
 
 //RegisterPublic ...
 func RegisterPublic(c *gin.Context) {
@@ -84,36 +62,6 @@ func Register(c *gin.Context) {
 	c.JSON(200, user)
 }
 
-// LoginV1 ...
-func LoginV1(c *gin.Context) {
-	authReq := user.AuthReq{}
-	err := c.ShouldBind(&authReq)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Data or data type is invalid",
-		})
-		return
-	}
-
-	userInfo, err := user.LoginV1(authReq.Email, authReq.Password)
-	if err != nil {
-		c.JSON(http.StatusNotAcceptable, gin.H{
-			"message": fmt.Sprintf("%s", err),
-		})
-		return
-	}
-
-	_, err = user.CreateLoginLog(&userInfo.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": fmt.Sprintf("%s", err),
-		})
-		return
-	}
-
-	c.JSON(200, userInfo)
-}
-
 // Login ...
 func Login(c *gin.Context) {
 	authReq := user.AuthReq{}
@@ -148,7 +96,8 @@ func Login(c *gin.Context) {
 func GetInfo(c *gin.Context) {
 	interfaceUserID, _ := c.Get("user_id")
 	userID := fmt.Sprintf("%v", interfaceUserID)
-
+	interfaceStoreID, _ := c.Get("store_id")
+	storeID := fmt.Sprintf("%v", interfaceStoreID)
 	user, err := user.GetUserByID(userID)
 
 	if err != nil {
@@ -158,31 +107,30 @@ func GetInfo(c *gin.Context) {
 		return
 	}
 
-	storeID := ""
-	storeName := ""
+	store, err := storeService.GetStoreByID(storeID)
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
 
-	if user.StoreID != nil {
-		storeID = *user.StoreID
-
-		store, err := storeService.GetStoreByID(storeID)
-		if err != nil {
-			c.JSON(http.StatusNotAcceptable, gin.H{
-				"message": fmt.Sprintf("%s", err),
-			})
-			return
-		}
-		storeID = store.ID
-		storeName = store.Name
+	storeJunctionUser, err := storejunctionuser.GetStoreJunctionUserByUserIDAndStoreID(userID, storeID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
 	}
 
 	userDisplay := display.User{
 		ID:           user.ID,
 		StoreID:      &storeID,
-		StoreName:    storeName,
+		StoreName:    store.Name,
 		FirstName:    user.FirstName,
 		LastName:     user.LastName,
 		Position:     user.Position,
-		Role:         user.Role,
+		Role:         storeJunctionUser.Role,
 		Avatar:       user.Avatar,
 		Token:        user.Token,
 		RefreshToken: user.RefreshToken,

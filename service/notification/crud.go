@@ -62,9 +62,9 @@ func GetByID(id string) (models.Notification, error) {
 }
 
 //GetSupport ...
-type GetSupport struct{
+type GetSupport struct {
 	Offset int `json:"offset,omitempty" form:"offset,omitempty"`
-	Limit int `json:"limit,omitempty" form:"limit,omitempty"`
+	Limit  int `json:"limit,omitempty" form:"limit,omitempty"`
 }
 
 //getDefault ...
@@ -75,6 +75,6 @@ func (support *GetSupport) getDefault() {
 	}
 
 	if support.Limit <= 0 {
-		support.Limit = 15
+		support.Limit = 10
 	}
 }

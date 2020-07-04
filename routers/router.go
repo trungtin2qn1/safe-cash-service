@@ -48,15 +48,6 @@ func SetUpRouter() {
 		}
 	}
 
-	v1 := router.Group("/v1")
-	{
-		api := v1.Group("/apis")
-		{
-			api.POST("/register", userController.RegisterPublicV1)
-			api.POST("/login", userController.LoginV1)
-		}
-	}
-
 	api := router.Group("/apis")
 	{
 		api.POST("/register", userController.RegisterPublic)

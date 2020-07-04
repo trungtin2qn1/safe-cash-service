@@ -82,6 +82,15 @@ func ListUnlockingLogs(c *gin.Context) {
 	unlockingLogsDisplay := []display.UnlockingLog{}
 	unlockingLogs := []models.UnlockingLog{}
 
+	support := &unlockinglog.GetSupport{}
+	err := c.ShouldBindQuery(&support)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
 	userInfo, err := user.GetUserByID(userID)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, gin.H{
@@ -137,8 +146,8 @@ func ListUnlockingLogs(c *gin.Context) {
 
 		unlockingLogDisplay := display.UnlockingLog{
 			UnlockingLog: v,
-			FirstName: userInfo.FirstName,
-			LastName: userInfo.LastName,
+			FirstName:    userInfo.FirstName,
+			LastName:     userInfo.LastName,
 		}
 
 		unlockingLogsDisplay = append(unlockingLogsDisplay, unlockingLogDisplay)

@@ -2,18 +2,19 @@ package user
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"safe-cash-service/service/user"
 	"safe-cash-service/utils/jwt"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 //GetAccessToken ...
-func GetAccessToken(c *gin.Context){
+func GetAccessToken(c *gin.Context) {
 	req := user.AccessTokenRequest{}
 	err := c.ShouldBind(&req)
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})
@@ -21,7 +22,7 @@ func GetAccessToken(c *gin.Context){
 	}
 
 	rawToken := string(req.RefreshToken[len("Tin "):])
-	userID, email, err := jwt.VerificationToken(rawToken)
+	userID, email, storeID, err := jwt.VerificationToken(rawToken)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -37,7 +38,7 @@ func GetAccessToken(c *gin.Context){
 		return
 	}
 
-	refreshToken, err := jwt.IssueToken(userID, email, time.Second * 604800)
+	refreshToken, err := jwt.IssueToken(userID, email, storeID, time.Second*604800)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -45,7 +46,7 @@ func GetAccessToken(c *gin.Context){
 		return
 	}
 
-	accessToken, err := jwt.IssueToken(userID, email, time.Second * 86400)
+	accessToken, err := jwt.IssueToken(userID, email, storeID, time.Second*86400)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),

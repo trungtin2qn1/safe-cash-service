@@ -32,3 +32,21 @@ func GetUnlockingLogsByUserID(userID string) ([]models.UnlockingLog, error) {
 
 	return res, nil
 }
+
+//GetSupport ...
+type GetSupport struct {
+	Offset int `json:"offset,omitempty" form:"offset,omitempty"`
+	Limit  int `json:"limit,omitempty" form:"limit,omitempty"`
+}
+
+//getDefault ...
+func (support *GetSupport) getDefault() {
+
+	if support.Offset == -1 {
+		support.Offset = 0
+	}
+
+	if support.Limit <= 0 {
+		support.Limit = 15
+	}
+}
