@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//VerifyAPIKey ...
 func VerifyAPIKey(c *gin.Context) {
 
 	key := c.Request.Header.Get("x-api-key")

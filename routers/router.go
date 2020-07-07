@@ -36,7 +36,7 @@ func SetUpRouter() {
 
 	services := router.Group("/services")
 	{
-		services.Use(middleware.VerifyAPIKey)
+		// services.Use(middleware.VerifyAPIKey)
 		admin := services.Group("/admin")
 		{
 			admin.POST("/notification", notificationController.SendByAdmin)
@@ -50,6 +50,13 @@ func SetUpRouter() {
 
 	api := router.Group("/apis")
 	{
+
+		services := api.Group("/services")
+		{
+			services.Use(middleware.VerifyClientCridentials)
+			services.POST("/unlock", userController.UnlockByService)
+		}
+
 		api.POST("/register", userController.RegisterPublic)
 		api.POST("/login", userController.Login)
 		api.POST("/access-token", userController.GetAccessToken)
@@ -65,6 +72,7 @@ func SetUpRouter() {
 				self.PUT("/password", userController.UpdatePassword)
 			}
 
+			auth.GET("finger-print", storeController.GetFingerPrint)
 			auth.GET("/store/:store_id", storeController.GetByID)
 			auth.GET("/stores", storeController.GetAllStoresByUserID)
 			auth.POST("/unlock", userController.Unlock)

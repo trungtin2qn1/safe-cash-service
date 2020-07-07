@@ -155,3 +155,60 @@ func ListUnlockingLogs(c *gin.Context) {
 
 	c.JSON(200, unlockingLogsDisplay)
 }
+
+//UnlockByService ...
+func UnlockByService(c *gin.Context) {
+	userID := c.Request.Header.Get("user_id")
+
+	unlockingLog := models.UnlockingLog{}
+
+	err := c.ShouldBind(&unlockingLog)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	userInfo, err := user.GetUserByID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	//Create unlocking log
+	unlockingLogInfo, err := unlockinglog.CreateUnlockingLog(unlockingLog.Content, unlockingLog.Method, *unlockingLog.IsSuccess, &userInfo.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	// Send notification to mobile app
+	go func(userID string) {
+		notiTokens, err := notification.GetOwnerStoreNotificationByUserID(userID)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		for _, notiToken := range notiTokens {
+			err := notification.Send(notiToken)
+			if err != nil {
+				continue
+			}
+		}
+
+		_, err = notification.Create("Có ai đó đã cố mở khóa", unlockingLog.Content, &userID)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}(userInfo.ID)
+
+	c.JSON(200, unlockingLogInfo)
+
+}

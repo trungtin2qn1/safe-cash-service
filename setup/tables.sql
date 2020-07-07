@@ -86,6 +86,22 @@ CREATE TABLE stores (
     foreign key (wp_id) references work_spaces(id)
 );
 
+--Create table client_credentials
+--Drop table client_credentials
+drop table if exists client_credentials;
+drop sequence if exists client_credentials_id_seq;
+CREATE SEQUENCE client_credentials_id_seq;
+
+CREATE TABLE client_credentials (
+    id bigint NOT NULL DEFAULT next_id('client_credentials_id_seq') primary key,
+    finger_print text unique,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    store_id bigint,
+    foreign key (store_id) references stores(id)
+);
+
 --Create table users
 --Drop table users
 drop table if exists users;
