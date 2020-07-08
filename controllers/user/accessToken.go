@@ -22,7 +22,7 @@ func GetAccessToken(c *gin.Context) {
 	}
 
 	rawToken := string(req.RefreshToken[len("Tin "):])
-	userID, email, storeID, err := jwt.VerificationToken(rawToken)
+	userID, email, storeID, role, err := jwt.VerificationToken(rawToken)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -38,7 +38,7 @@ func GetAccessToken(c *gin.Context) {
 		return
 	}
 
-	refreshToken, err := jwt.IssueToken(userID, email, storeID, time.Second*604800)
+	refreshToken, err := jwt.IssueToken(userID, email, storeID, role, time.Second*604800)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -46,7 +46,7 @@ func GetAccessToken(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := jwt.IssueToken(userID, email, storeID, time.Second*86400)
+	accessToken, err := jwt.IssueToken(userID, email, storeID, role, time.Second*86400)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -56,6 +56,7 @@ func GetAccessToken(c *gin.Context) {
 
 	userInfo.RefreshToken = refreshToken
 	userInfo.Token = accessToken
+	userInfo.Role = role
 
 	c.JSON(http.StatusOK, userInfo)
 }

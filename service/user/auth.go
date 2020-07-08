@@ -79,13 +79,13 @@ func Login(email, password, storeName string) (models.User, error) {
 		return user, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, time.Second*86400)
+	token, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, storeJunctionUser.Role, time.Second*86400)
 	if err != nil {
 		return user, err
 	}
 	user.Token = token
 
-	refreshToken, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, time.Second*604800)
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, storeJunctionUser.Role, time.Second*604800)
 	if err != nil {
 		return user, err
 	}
@@ -146,13 +146,13 @@ func RegisterForOwner(email, password, userID, storeID, role string) (models.Use
 		return user, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, storeID, time.Second*86400)
+	token, err := jwt.IssueToken(user.ID, user.Email, storeID, storeJunctionUser.Role, time.Second*86400)
 	if err != nil {
 		return models.User{}, err
 	}
 	user.Token = token
 
-	refreshToken, err := jwt.IssueToken(user.ID, user.Email, storeID, time.Second*604800)
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, storeID, storeJunctionUser.Role, time.Second*604800)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -202,13 +202,13 @@ func RegisterPublic(email, password, storeName string) (models.User, models.Stor
 		return user, storeInfo, err
 	}
 
-	token, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, time.Second*86400)
+	token, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, storeJunctionUser.Role, time.Second*86400)
 	if err != nil {
 		return user, storeInfo, err
 	}
 	user.Token = token
 
-	refreshToken, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, time.Second*604800)
+	refreshToken, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, storeJunctionUser.Role, time.Second*604800)
 	if err != nil {
 		return user, storeInfo, err
 	}
