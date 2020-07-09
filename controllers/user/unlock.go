@@ -170,6 +170,8 @@ func UnlockByService(c *gin.Context) {
 		return
 	}
 
+	log.Println("unlocking log:", unlockingLog)
+
 	userInfo, err := user.GetUserByID(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

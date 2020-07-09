@@ -113,7 +113,7 @@ CREATE TABLE users (
     created_at timestamp,
     updated_at timestamp,
     deleted_at timestamp,
-    email text,
+    email text unique,
     phone_number text,
     first_name text,
     last_name text,
@@ -121,9 +121,7 @@ CREATE TABLE users (
     username text,
     position int,
     role text,
-    avatar text,
-    store_id bigint,
-    foreign key (store_id) references stores(id)
+    avatar text
 );
 
 --Create table store_junction_users
