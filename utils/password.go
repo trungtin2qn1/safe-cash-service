@@ -8,7 +8,7 @@ import (
 
 //Generate a salted hash for the input string
 func Generate(s string) (string, error) {
-	saltedBytes := []byte(s)
+	saltedBytes := []byte(s + getPepper())
 	hashedBytes, err := bcrypt.GenerateFromPassword(saltedBytes, bcrypt.DefaultCost)
 	if err != nil {
 		// go LogErrToFile(err.Error())
@@ -21,7 +21,7 @@ func Generate(s string) (string, error) {
 
 //Compare ...
 func Compare(hash string, s string) (bool, error) {
-	incoming := []byte(s)
+	incoming := []byte(s + getPepper())
 	existing := []byte(hash)
 
 	err := bcrypt.CompareHashAndPassword(existing, incoming)
@@ -31,4 +31,8 @@ func Compare(hash string, s string) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func getPepper() string {
+	return "pepper"
 }
