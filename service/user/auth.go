@@ -7,6 +7,7 @@ import (
 	"safe-cash-service/constants"
 	"safe-cash-service/db"
 	"safe-cash-service/models"
+	"safe-cash-service/service/clientcredential"
 	"safe-cash-service/service/store"
 	"safe-cash-service/service/storejunctionuser"
 	"safe-cash-service/utils"
@@ -198,6 +199,11 @@ func RegisterPublic(email, password, storeName string) (models.User, models.Stor
 	}
 
 	storeJunctionUser, err := storejunctionuser.CreateStoreJunctionUser(constants.OWNER, &user.ID, &storeInfo.ID)
+	if err != nil {
+		return user, storeInfo, err
+	}
+
+	_, err = clientcredential.CreateByValue(storeInfo.ID)
 	if err != nil {
 		return user, storeInfo, err
 	}

@@ -3,6 +3,8 @@ package clientcredential
 import (
 	"safe-cash-service/db"
 	"safe-cash-service/models"
+
+	"github.com/google/uuid"
 )
 
 //GetByFingerPrintAndStoreID :
@@ -29,4 +31,22 @@ func GetByStoreID(storeID string) (*models.ClientCredential, error) {
 		Find(&clientCredential)
 
 	return clientCredential, dbConn.Error
+}
+
+//CreateByValue ...
+func CreateByValue(storeID string) (*models.ClientCredential, error) {
+
+	genID := uuid.New()
+
+	clientCredential := &models.ClientCredential{
+		FingerPrint: genID.String(),
+		StoreID:     &storeID,
+	}
+
+	dbConn := db.GetDB()
+
+	dbConn = dbConn.Create(&clientCredential)
+
+	return clientCredential, dbConn.Error
+
 }
