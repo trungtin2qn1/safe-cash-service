@@ -72,7 +72,7 @@ func SetUpRouter() {
 				self.PUT("/password", userController.UpdatePassword)
 			}
 
-			auth.GET("finger-print", storeController.GetFingerPrint)
+			auth.GET("/finger-print", storeController.GetFingerPrint)
 			auth.GET("/store/:store_id", storeController.GetByID)
 			auth.GET("/stores", storeController.GetAllStoresByUserID)
 			auth.POST("/unlock", userController.Unlock)

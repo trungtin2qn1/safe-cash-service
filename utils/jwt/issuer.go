@@ -23,6 +23,8 @@ func IssueToken(id, email, storeID, role string, duration time.Duration) (string
 	// time.Second * 604800: refresh Token
 	expire := time.Now().Add(duration).Unix()
 
+	log.Println("[issue-token] storeID:", storeID)
+
 	// Create the Claims
 	claims := &ConsumerInfo{
 		id,
