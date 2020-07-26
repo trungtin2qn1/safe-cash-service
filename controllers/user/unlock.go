@@ -156,7 +156,6 @@ func ListUnlockingLogs(c *gin.Context) {
 
 //UnlockByService ...
 func UnlockByService(c *gin.Context) {
-	userID := c.Request.Header.Get("user_id")
 
 	unlockingLog := models.UnlockingLog{}
 
@@ -170,7 +169,14 @@ func UnlockByService(c *gin.Context) {
 
 	log.Println("unlocking log:", unlockingLog)
 
-	userInfo, err := user.GetUserByID(userID)
+	if unlockingLog.UserID == nil {
+		c.JSON(http.StatusNotAcceptable, gin.H{
+			"message": "User ID can not be null",
+		})
+		return
+	}
+
+	userInfo, err := user.GetUserByID(*unlockingLog.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),

@@ -21,5 +21,6 @@ func GetFingerPrint(c *gin.Context) {
 		return
 	}
 
+	clientCredential.StoreCredential = clientCredential.FingerPrint
 	c.JSON(http.StatusOK, clientCredential)
 }
