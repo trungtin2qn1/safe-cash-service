@@ -11,7 +11,7 @@ import (
 
 //CreateUser ...
 func CreateUser(email, password,
-	phoneNumber, firstName, lastName string, position int, storeID *string) (models.User, error) {
+	phoneNumber, firstName, lastName string) (models.User, error) {
 
 	user := models.User{
 		Email:       email,
@@ -19,8 +19,6 @@ func CreateUser(email, password,
 		PhoneNumber: phoneNumber,
 		FirstName:   firstName,
 		LastName:    lastName,
-		Position:    position,
-		StoreID:     storeID,
 	}
 
 	dbConn := db.GetDB()
@@ -72,7 +70,7 @@ func GetUserByEmail(email string) (models.User, error) {
 	return user, nil
 }
 
-//GetusersByStoreID ...
+//GetUsersByStoreID ...
 func GetUsersByStoreID(storeID string) ([]models.User, error) {
 	dbConn := db.GetDB()
 

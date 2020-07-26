@@ -11,10 +11,12 @@ import (
 
 //GetStaffsInStore ...
 func GetStaffsInStore(c *gin.Context) {
-	interfaceUserID, _ := c.Get("user_id")
-	userID := fmt.Sprintf("%v", interfaceUserID)
+	// interfaceUserID, _ := c.Get("user_id")
+	// userID := fmt.Sprintf("%v", interfaceUserID)
+	interfaceStoreID, _ := c.Get("store_id")
+	storeID := fmt.Sprintf("%v", interfaceStoreID)
 
-	user, err := userService.GetUserByID(userID)
+	staffs, err := userService.GetUsersByStoreID(storeID)
 
 	if err != nil && err != gorm.ErrRecordNotFound {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -23,22 +25,5 @@ func GetStaffsInStore(c *gin.Context) {
 		return
 	}
 
-	if user.StoreID != nil {
-		staffs, err := userService.GetUsersByStoreID(*user.StoreID)
-
-		if err != nil && err != gorm.ErrRecordNotFound {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "Server is busy",
-			})
-			return
-		}
-
-		c.JSON(200, staffs)
-		return
-	}
-
-	c.JSON(http.StatusInternalServerError, gin.H{
-		"message": "Server is busy",
-	})
-	return
+	c.JSON(200, staffs)
 }

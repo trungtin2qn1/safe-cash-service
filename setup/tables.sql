@@ -119,8 +119,6 @@ CREATE TABLE users (
     last_name text,
     password text,
     username text,
-    position int,
-    role text,
     avatar text
 );
 

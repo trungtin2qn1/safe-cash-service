@@ -7,7 +7,7 @@ services:
       - database.env # configure postgres
     # volumes:
     #   - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
-    container_name: safe-cash-service_postgres
+    container_name: postgres
     ports:
       - 5432:5432
 

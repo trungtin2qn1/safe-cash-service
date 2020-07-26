@@ -132,9 +132,9 @@ func RegisterForOwner(email, password, userID, storeID, role string) (models.Use
 
 	hashPwd, _ := utils.Generate(password)
 	if storeID != "" {
-		user, err = CreateUser(email, hashPwd, "", "", "", 0, &storeID)
+		user, err = CreateUser(email, hashPwd, "", "", "")
 	} else {
-		user, err = CreateUser(email, hashPwd, "", "", "", 0, nil)
+		user, err = CreateUser(email, hashPwd, "", "", "")
 	}
 
 	if err != nil {
@@ -188,9 +188,9 @@ func RegisterPublic(email, password, storeName string) (models.User, models.Stor
 	hashPwd, _ := utils.Generate(password)
 
 	if storeInfo.ID != "" {
-		user, err = CreateUser(email, hashPwd, "", "", "", 0, &storeInfo.ID)
+		user, err = CreateUser(email, hashPwd, "", "", "")
 	} else {
-		user, err = CreateUser(email, hashPwd, "", "", "", 0, nil)
+		user, err = CreateUser(email, hashPwd, "", "", "")
 	}
 
 	if err != nil {

@@ -91,24 +91,22 @@ func ListUnlockingLogs(c *gin.Context) {
 		return
 	}
 
-	userInfo, err := user.GetUserByID(userID)
-	if err != nil {
-		c.JSON(http.StatusServiceUnavailable, gin.H{
-			"message": "Can't find user",
-		})
-		return
-	}
+	// userInfo, err := user.GetUserByID(userID)
+	// if err != nil {
+	// 	c.JSON(http.StatusServiceUnavailable, gin.H{
+	// 		"message": "Can't find user",
+	// 	})
+	// 	return
+	// }
 
 	if storeID != "" {
 
 		storeJunctionUser, err := storejunctionuser.GetStoreJunctionUserByUserIDAndStoreID(userID, storeID)
 		if err != nil || storeJunctionUser.ID == "" {
-			if *userInfo.StoreID != storeID {
-				c.JSON(http.StatusServiceUnavailable, gin.H{
-					"message": "User don't belong to this store",
-				})
-				return
-			}
+			c.JSON(http.StatusServiceUnavailable, gin.H{
+				"message": "User don't belong to this store",
+			})
+			return
 		}
 
 		users, err := user.GetUsersByStoreID(storeID)

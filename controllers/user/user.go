@@ -129,7 +129,6 @@ func GetInfo(c *gin.Context) {
 		StoreName:    store.Name,
 		FirstName:    user.FirstName,
 		LastName:     user.LastName,
-		Position:     user.Position,
 		Role:         storeJunctionUser.Role,
 		Avatar:       user.Avatar,
 		Token:        user.Token,

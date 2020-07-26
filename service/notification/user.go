@@ -3,7 +3,6 @@ package notification
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 	"safe-cash-service/db"
 	"safe-cash-service/models"
@@ -16,18 +15,17 @@ func GetOwnerStoreNotificationByUserID(userID string) ([]models.NotificationToke
 
 	notiTokens := []models.NotificationToken{}
 
-	dbConn.Raw(`select * 
-	from "notification_tokens" as noti_tokens
-	where noti_tokens.user_id in
-	(select users_2.id
-	from "users" as users_2
-	where users_2.position = 0 and
-	users_2.store_id in
-	(select users_1.store_id
-	from "users" as users_1
-	where users_1.id = ?));`, userID).Scan(&notiTokens)
+	storeJunctionUser := models.StoreJunctionUser{}
 
-	log.Println("notiTokens:", notiTokens)
+	dbConnTemp := dbConn.Where("user_id = ? and role = ?", userID, "owner").Find(&storeJunctionUser)
+	if dbConnTemp.Error != nil {
+		return nil, dbConnTemp.Error
+	}
+
+	dbConnTemp = dbConn.Where("user_id = ?", storeJunctionUser.UserID).Find(&notiTokens)
+	if dbConnTemp.Error != nil {
+		return nil, dbConnTemp.Error
+	}
 
 	return notiTokens, nil
 }
