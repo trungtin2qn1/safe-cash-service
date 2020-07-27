@@ -73,6 +73,7 @@ func GetUsersByStoreID(storeID string) ([]models.User, error) {
 		if dbConn.Error != nil {
 			return users, dbConn.Error
 		}
+		user.Role = v.Role
 		users = append(users, user)
 	}
 
