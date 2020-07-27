@@ -74,14 +74,23 @@ func GetUserByEmail(email string) (models.User, error) {
 func GetUsersByStoreID(storeID string) ([]models.User, error) {
 	dbConn := db.GetDB()
 
-	user := []models.User{}
-	res := dbConn.Where("store_id = ?", storeID).Find(&user)
-	if res.Error != nil {
-		log.Println(res.Error)
-		return user, errors.New("Data or data type is invalid")
+	users := []models.User{}
+
+	storeJunctionUsers := []models.StoreJunctionUser{}
+
+	dbConn = dbConn.Where("store_id = ?", storeID).Find(&storeJunctionUsers)
+
+	for _, v := range storeJunctionUsers {
+		user := models.User{}
+		dbConn := db.GetDB()
+		dbConn = dbConn.Where("id = ?", v.UserID).Find(&user)
+		if dbConn.Error != nil {
+			return users, dbConn.Error
+		}
+		users = append(users, user)
 	}
 
-	return user, nil
+	return users, dbConn.Error
 }
 
 //updateInfo ...
