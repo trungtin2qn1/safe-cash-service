@@ -161,6 +161,7 @@ func UnlockByService(c *gin.Context) {
 
 	err := c.ShouldBind(&unlockingLog)
 	if err != nil {
+		log.Println("err:", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})

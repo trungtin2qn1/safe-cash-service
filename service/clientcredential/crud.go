@@ -7,6 +7,19 @@ import (
 	"github.com/google/uuid"
 )
 
+//GetByFingerPrint :
+func GetByFingerPrint(fingerPrint string) (*models.ClientCredential, error) {
+	clientCredential := &models.ClientCredential{}
+
+	dbConn := db.GetDB()
+
+	dbConn = dbConn.
+		Where("finger_print = ?", fingerPrint).
+		Find(&clientCredential)
+
+	return clientCredential, dbConn.Error
+}
+
 //GetByFingerPrintAndStoreID :
 func GetByFingerPrintAndStoreID(fingerPrint, storeID string) (*models.ClientCredential, error) {
 	clientCredential := &models.ClientCredential{}
