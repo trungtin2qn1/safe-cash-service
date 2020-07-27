@@ -10,7 +10,12 @@ import (
 //VerifyClientCridentials ...
 func VerifyClientCridentials(c *gin.Context) {
 
+	storeCredential := c.Request.Header.Get("store_credential")
 	fingerPrint := c.Request.Header.Get("finger_print")
+
+	if fingerPrint == "" {
+		fingerPrint = storeCredential
+	}
 
 	// userID := c.Request.Header.Get("user_id")
 
