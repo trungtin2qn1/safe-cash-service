@@ -37,13 +37,13 @@ func VerifyClientCridentials(c *gin.Context) {
 
 	clientCridential, err := clientcredential.GetByFingerPrint(fingerPrint)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": "Wrong Finger Print",
 		})
 		return
 	}
 	if clientCridential.ID == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": "Wrong Finger Print",
 		})
 		return
