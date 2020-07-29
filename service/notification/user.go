@@ -64,7 +64,7 @@ type FCMNotificationRequest struct {
 }
 
 //Send ...
-func Send(notiToken models.NotificationToken) error {
+func Send(notiToken models.NotificationToken, title, body string) error {
 
 	header := http.Header{}
 
@@ -73,8 +73,10 @@ func Send(notiToken models.NotificationToken) error {
 
 	req := FCMNotificationRequest{
 		Notification: FCMNotificationRequestData{
-			Title: "Có ai đó vừa mở két tiền của bạn",
-			Body:  "Bạn hãy kiểm tra xem ai đó vừa mở két tiền của bạn đấy",
+			// Title: "Có ai đó vừa mở két tiền của bạn",
+			Title: title,
+			// Body:  "Bạn hãy kiểm tra xem ai đó vừa mở két tiền của bạn đấy",
+			Body: body,
 		},
 		To: notiToken.Token,
 	}

@@ -51,7 +51,7 @@ func Send(c *gin.Context) {
 	}
 
 	for _, notiToken := range notiTokens {
-		err := notification.Send(notiToken)
+		err := notification.Send(notiToken, "", "")
 		if err != nil {
 			continue
 		}

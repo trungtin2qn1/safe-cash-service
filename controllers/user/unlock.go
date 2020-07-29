@@ -55,7 +55,7 @@ func Unlock(c *gin.Context) {
 		}
 
 		for _, notiToken := range notiTokens {
-			err := notification.Send(notiToken)
+			err := notification.Send(notiToken, "Có ai đó đã cố mở khóa", "Có ai đó đã cố mở khóa")
 			if err != nil {
 				continue
 			}
@@ -183,8 +183,24 @@ func UnlockByService(c *gin.Context) {
 		return
 	}
 
+	title := ""
+	body := unlockingLog.Content
+
+	if unlockingLog.UserID != nil {
+		userInfo, err := user.GetUserByID(*unlockingLog.UserID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": fmt.Sprintf("%s", err),
+			})
+			return
+		}
+		title = userInfo.FirstName + " " + userInfo.LastName + " vừa cố mở khóa đấy"
+	} else {
+		title = "Có ai đó đã cố mở két tiền của bạn đấy"
+	}
+
 	// Send notification to mobile app
-	go func(userID *string, storeID string) {
+	go func(userID *string, storeID, title, body string) {
 		notiTokens, err := notification.GetOwnerStoreTokenByStoreID(storeID)
 		if err != nil {
 			log.Println(err)
@@ -192,25 +208,10 @@ func UnlockByService(c *gin.Context) {
 		}
 
 		for _, notiToken := range notiTokens {
-			err := notification.Send(notiToken)
+			err := notification.Send(notiToken, title, body)
 			if err != nil {
 				continue
 			}
-		}
-
-		title := ""
-
-		if unlockingLog.UserID != nil {
-			userInfo, err := user.GetUserByID(*unlockingLog.UserID)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{
-					"message": fmt.Sprintf("%s", err),
-				})
-				return
-			}
-			title = userInfo.FirstName + " " + userInfo.LastName + " vừa cố mở khóa đấy"
-		} else {
-			title = "Có ai đó đã cố mở két tiền của bạn đấy"
 		}
 
 		_, err = notification.Create(title, unlockingLog.Content, userID)
@@ -218,7 +219,7 @@ func UnlockByService(c *gin.Context) {
 			log.Println(err)
 			return
 		}
-	}(unlockingLog.UserID, storeID)
+	}(unlockingLog.UserID, storeID, title, body)
 
 	c.JSON(200, unlockingLogInfo)
 }
