@@ -42,6 +42,7 @@ func VerifyClientCridentials(c *gin.Context) {
 		})
 		return
 	}
+
 	if clientCridential.ID == "" {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": "Wrong Finger Print",
@@ -49,5 +50,6 @@ func VerifyClientCridentials(c *gin.Context) {
 		return
 	}
 
+	c.Set("store_id", *clientCridential.StoreID)
 	c.Next()
 }

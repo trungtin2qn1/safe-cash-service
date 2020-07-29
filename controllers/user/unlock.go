@@ -157,6 +157,8 @@ func ListUnlockingLogs(c *gin.Context) {
 //UnlockByService ...
 func UnlockByService(c *gin.Context) {
 
+	interfaceStoreID, _ := c.Get("store_id")
+	storeID := fmt.Sprintf("%v", interfaceStoreID)
 	unlockingLog := models.UnlockingLog{}
 
 	err := c.ShouldBind(&unlockingLog)
@@ -168,25 +170,12 @@ func UnlockByService(c *gin.Context) {
 		return
 	}
 
-	log.Println("unlocking log:", unlockingLog)
-
-	if unlockingLog.UserID == nil {
-		c.JSON(http.StatusNotAcceptable, gin.H{
-			"message": "User ID can not be null",
-		})
-		return
-	}
-
-	userInfo, err := user.GetUserByID(*unlockingLog.UserID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": fmt.Sprintf("%s", err),
-		})
-		return
+	if unlockingLog.UserID != nil && *unlockingLog.UserID == "" {
+		unlockingLog.UserID = nil
 	}
 
 	//Create unlocking log
-	unlockingLogInfo, err := unlockinglog.CreateUnlockingLog(unlockingLog.Content, unlockingLog.Method, *unlockingLog.IsSuccess, &userInfo.ID)
+	unlockingLogInfo, err := unlockinglog.CreateUnlockingLog(unlockingLog.Content, unlockingLog.Method, *unlockingLog.IsSuccess, unlockingLog.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -195,8 +184,8 @@ func UnlockByService(c *gin.Context) {
 	}
 
 	// Send notification to mobile app
-	go func(userID string) {
-		notiTokens, err := notification.GetOwnerStoreNotificationByUserID(userID)
+	go func(userID *string, storeID string) {
+		notiTokens, err := notification.GetOwnerStoreTokenByStoreID(storeID)
 		if err != nil {
 			log.Println(err)
 			return
@@ -209,13 +198,27 @@ func UnlockByService(c *gin.Context) {
 			}
 		}
 
-		_, err = notification.Create("Có ai đó đã cố mở khóa", unlockingLog.Content, &userID)
+		title := ""
+
+		if unlockingLog.UserID != nil {
+			userInfo, err := user.GetUserByID(*unlockingLog.UserID)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"message": fmt.Sprintf("%s", err),
+				})
+				return
+			}
+			title = userInfo.FirstName + " " + userInfo.LastName + " vừa cố mở khóa đấy"
+		} else {
+			title = "Có ai đó đã cố mở két tiền của bạn đấy"
+		}
+
+		_, err = notification.Create(title, unlockingLog.Content, userID)
 		if err != nil {
 			log.Println(err)
 			return
 		}
-	}(userInfo.ID)
+	}(unlockingLog.UserID, storeID)
 
 	c.JSON(200, unlockingLogInfo)
-
 }

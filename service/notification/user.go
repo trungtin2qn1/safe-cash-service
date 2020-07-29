@@ -9,6 +9,27 @@ import (
 	"safe-cash-service/utils"
 )
 
+//GetOwnerStoreTokenByStoreID :
+func GetOwnerStoreTokenByStoreID(storeID string) ([]models.NotificationToken, error) {
+	dbConn := db.GetDB()
+
+	notiTokens := []models.NotificationToken{}
+
+	storeJunctionUser := models.StoreJunctionUser{}
+
+	dbConnTemp := dbConn.Where("store_id = ? and role = ?", storeID, "owner").Find(&storeJunctionUser)
+	if dbConnTemp.Error != nil {
+		return nil, dbConnTemp.Error
+	}
+
+	dbConnTemp = dbConn.Where("user_id = ?", storeJunctionUser.UserID).Find(&notiTokens)
+	if dbConnTemp.Error != nil {
+		return nil, dbConnTemp.Error
+	}
+
+	return notiTokens, nil
+}
+
 //GetOwnerStoreNotificationByUserID ...
 func GetOwnerStoreNotificationByUserID(userID string) ([]models.NotificationToken, error) {
 	dbConn := db.GetDB()
