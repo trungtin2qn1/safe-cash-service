@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"safe-cash-service/models"
 	"safe-cash-service/service/storemedia"
 	"strings"
 
@@ -23,13 +24,13 @@ const (
 )
 
 //handleFormFile ...
-func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID string) error {
+func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID string) (*models.StoreMedia, error) {
 	file, header, err := c.Request.FormFile(fileNameRequest)
 	if err != nil {
 		if file == nil {
-			return nil
+			return nil, nil
 		}
-		return err
+		return nil, err
 	}
 
 	fileName := uuid.New().String()
@@ -40,12 +41,12 @@ func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID string) err
 	fileName = fileName + "." + tail
 	out, err := os.Create("static/" + fileName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer out.Close()
 	_, err = io.Copy(out, file)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	typeMedia := ""
@@ -58,16 +59,16 @@ func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID string) err
 		typeMedia = Video
 		thumbnail, err = generateThumbnailFromVideo(fileName)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	_, err = storemedia.CreateStoreMedia(fileName, typeMedia, thumbnail, &userID, &storeID)
+	media, err := storemedia.CreateStoreMedia(fileName, typeMedia, thumbnail, &userID, &storeID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &media, nil
 }
 
 func generateThumbnailFromImage(fileName string) {
@@ -100,7 +101,15 @@ func Upload(c *gin.Context) {
 	interfaceStoreID, _ := c.Get("store_id")
 	storeID := fmt.Sprintf("%v", interfaceStoreID)
 
-	err := handleFormFile(c, "snap_shot_desktop", userID, storeID)
+	unlockingLogID, ok := c.GetPostForm("unlocking_log_id")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+
+	snapShotMedia, err := handleFormFile(c, "snap_shot_desktop", userID, storeID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -108,7 +117,17 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	err = handleFormFile(c, "snap_shot_webcam", userID, storeID)
+	if snapShotMedia != nil {
+		_, err := storemedia.CreateMediaUnlockingLog(&snapShotMedia.ID, &unlockingLogID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": fmt.Sprintf("%s", err),
+			})
+			return
+		}
+	}
+
+	videoMedia, err := handleFormFile(c, "video", userID, storeID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -116,12 +135,14 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	err = handleFormFile(c, "video", userID, storeID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": fmt.Sprintf("%s", err),
-		})
-		return
+	if videoMedia != nil {
+		_, err := storemedia.CreateMediaUnlockingLog(&videoMedia.ID, &unlockingLogID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": fmt.Sprintf("%s", err),
+			})
+			return
+		}
 	}
 
 	c.JSON(200, gin.H{

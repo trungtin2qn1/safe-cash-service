@@ -265,3 +265,20 @@ CREATE TABLE store_medias (
     foreign key (user_id) references users(id),
     foreign key (store_id) references stores(id)
 );
+
+--Create table media_unlocking_logs
+--Drop table media_unlocking_logs
+drop table if exists media_unlocking_logs;
+drop sequence if exists media_unlocking_logs_id_seq;
+CREATE SEQUENCE media_unlocking_logs_id_seq;
+
+CREATE TABLE media_unlocking_logs (
+    id bigint NOT NULL DEFAULT next_id('media_unlocking_logs_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    store_media_id bigint,
+    unlocking_log_id bigint,
+    foreign key (store_media_id) references store_medias(id),
+    foreign key (unlocking_log_id) references unlocking_logs(id)
+);
