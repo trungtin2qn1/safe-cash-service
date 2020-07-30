@@ -25,6 +25,34 @@ func CreateStoreMedia(name, t, thumbnail string, userID, storeID *string) (model
 	return storeMedia, dbConn.Error
 }
 
+//GetByID :
+func GetByID(id string) (models.StoreMedia, error) {
+	res := models.StoreMedia{}
+
+	dbConn := db.GetDB()
+
+	dbConn = dbConn.Where("id = ?", id).Find(&res)
+
+	return res, dbConn.Error
+}
+
+//GetByStoreIDAndDate :
+func GetByStoreIDAndDate(storeID, date string) ([]models.StoreMedia, error) {
+	res := []models.StoreMedia{}
+
+	dbConn := db.GetDB()
+
+	if date != "" {
+		from := date + " 00:00:00"
+		to := date + " 23:59:59"
+		dbConn = dbConn.Where("created_at between ? and ?", from, to)
+	}
+
+	dbConn = dbConn.Where("store_id = ?", storeID).Find(&res)
+
+	return res, dbConn.Error
+}
+
 // GetStoreMediaByStoreID ...
 func GetStoreMediaByStoreID(storeID string) ([]models.StoreMedia, error) {
 	dbConn := db.GetDB()

@@ -10,8 +10,11 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"safe-cash-service/display"
 	"safe-cash-service/models"
 	"safe-cash-service/service/storemedia"
+	"safe-cash-service/service/unlockinglog"
+	"safe-cash-service/service/user"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -152,5 +155,50 @@ func Upload(c *gin.Context) {
 
 //GetByStoreID :
 func GetByStoreID(c *gin.Context) {
+	interfaceStoreID, _ := c.Get("store_id")
+	storeID := fmt.Sprintf("%v", interfaceStoreID)
 
+	date := c.Query("date")
+
+	users, err := user.GetUsersByStoreID(storeID)
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	unLockingLogs := []models.UnlockingLog{}
+	for _, v := range users {
+		temp, err := unlockinglog.GetUnlockingLogsByUserIDAndDate(v.ID, date)
+		if err == nil {
+			unLockingLogs = append(unLockingLogs, temp...)
+		}
+	}
+
+	storeMediasDisplay := []display.StoreMedia{}
+
+	for _, v := range unLockingLogs {
+		storeMediaDisplay := display.StoreMedia{}
+		mediaUnlockingLog, err := storemedia.GetMediaUnlockingLogByUnlockingLogID(v.ID)
+		if err != nil {
+			continue
+		}
+		for _, value := range mediaUnlockingLog {
+			storeMedia, err := storemedia.GetByID(*value.StoreMediaID)
+			if err != nil {
+				continue
+			}
+			storeMediaDisplay.Medias = append(storeMediaDisplay.Medias, storeMedia)
+		}
+		userInfo, err := user.GetUserByID(*v.UserID)
+		if err != nil {
+			continue
+		}
+		storeMediaDisplay.Username = userInfo.FirstName + " " + userInfo.LastName
+		storeMediaDisplay.IsSuccess = *v.IsSuccess
+		storeMediasDisplay = append(storeMediasDisplay, storeMediaDisplay)
+	}
+
+	c.JSON(http.StatusOK, storeMediasDisplay)
 }

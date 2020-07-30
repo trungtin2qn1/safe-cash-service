@@ -21,11 +21,40 @@ func CreateUnlockingLog(content, method string, isSuccess bool, userID *string) 
 	return unlockingLog, dbConn.Error
 }
 
+//GetUnlockingLogByID ...
+func GetUnlockingLogByID(id string) (models.UnlockingLog, error) {
+	res := models.UnlockingLog{}
+
+	dbConn := db.GetDB()
+	dbConn = dbConn.Where("id = ?", id).Find(&res)
+
+	return res, nil
+}
+
 //GetUnlockingLogsByUserID ...
 func GetUnlockingLogsByUserID(userID string) ([]models.UnlockingLog, error) {
 	res := []models.UnlockingLog{}
 
 	dbConn := db.GetDB()
+	dbConn = dbConn.
+		Order("id desc").
+		Where("user_id = ?", userID).Find(&res)
+
+	return res, nil
+}
+
+//GetUnlockingLogsByUserIDAndDate ...
+func GetUnlockingLogsByUserIDAndDate(userID, date string) ([]models.UnlockingLog, error) {
+	res := []models.UnlockingLog{}
+
+	dbConn := db.GetDB()
+
+	if date != "" {
+		from := date + " 00:00:00"
+		to := date + " 23:59:59"
+		dbConn = dbConn.Where("created_at between ? and ?", from, to)
+	}
+
 	dbConn = dbConn.
 		Order("id desc").
 		Where("user_id = ?", userID).Find(&res)
