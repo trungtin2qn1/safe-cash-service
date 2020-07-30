@@ -119,7 +119,8 @@ CREATE TABLE users (
     last_name text,
     password text,
     username text,
-    avatar text
+    avatar text,
+    role text
 );
 
 --Create table store_junction_users
@@ -243,4 +244,24 @@ CREATE TABLE user_login_logs (
     deleted_at timestamp,
     user_id bigint,
     foreign key (user_id) references users(id)
+);
+
+--Create table store_medias
+--Drop table store_medias
+drop table if exists store_medias;
+drop sequence if exists store_medias_id_seq;
+CREATE SEQUENCE store_medias_id_seq;
+
+CREATE TABLE store_medias (
+    id bigint NOT NULL DEFAULT next_id('store_medias_id_seq') primary key,
+    created_at timestamp,
+    updated_at timestamp,
+    deleted_at timestamp,
+    name text unique,
+    type text,
+    thumbnail text unique,
+    store_id bigint,
+    user_id bigint,
+    foreign key (user_id) references users(id),
+    foreign key (store_id) references stores(id)
 );

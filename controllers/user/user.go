@@ -1,6 +1,7 @@
 package user
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -73,7 +74,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	userInfo, err := user.Login(authReq.Email, authReq.Password, authReq.StoreName)
+	userInfo, storeInfo, err := user.Login(authReq.Email, authReq.Password, authReq.StoreName)
 	if err != nil {
 		c.JSON(http.StatusNotAcceptable, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -89,7 +90,27 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, userInfo)
+	userDisplay := display.User{
+		StoreID:   &storeInfo.ID,
+		StoreName: storeInfo.Name,
+	}
+
+	data, err := json.Marshal(userInfo)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+	err = json.Unmarshal(data, &userDisplay)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	c.JSON(200, userDisplay)
 }
 
 //GetInfo ...
@@ -124,18 +145,26 @@ func GetInfo(c *gin.Context) {
 	}
 
 	userDisplay := display.User{
-		ID:           user.ID,
-		StoreID:      &storeID,
-		StoreName:    store.Name,
-		FirstName:    user.FirstName,
-		LastName:     user.LastName,
-		Role:         storeJunctionUser.Role,
-		Avatar:       user.Avatar,
-		Token:        user.Token,
-		RefreshToken: user.RefreshToken,
-		PhoneNumber:  user.PhoneNumber,
-		Email:        user.Email,
+		StoreID:   &storeID,
+		StoreName: store.Name,
 	}
+
+	data, err := json.Marshal(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+	err = json.Unmarshal(data, &userDisplay)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	userDisplay.Role = storeJunctionUser.Role
 
 	c.JSON(200, userDisplay)
 }

@@ -43,57 +43,57 @@ func checkAuthData(email string, password string) bool {
 }
 
 //Login ...
-func Login(email, password, storeName string) (models.User, error) {
+func Login(email, password, storeName string) (models.User, models.Store, error) {
 	user := models.User{}
 	var err error
 	if !(checkAuthData(email, password)) {
 		err = fmt.Errorf("%s", "Email or password is invalid")
-		return user, err
+		return user, models.Store{}, err
 	}
 
 	storeInfo, err := store.GetStoreByName(storeName)
 	if err != nil {
-		return user, err
+		return user, models.Store{}, err
 	}
 
 	user, err = GetUserByEmail(email)
 	if err != nil {
 		err = fmt.Errorf("%s", "User is not available")
-		return user, err
+		return user, models.Store{}, err
 	}
 
 	check, err := utils.Compare(user.Password, password)
 
 	if err != nil {
 		err = fmt.Errorf("%s", "Password is not right")
-		return user, err
+		return user, models.Store{}, err
 	}
 
 	if check == false {
 		err = fmt.Errorf("%s", "Password is not right")
-		return user, err
+		return user, models.Store{}, err
 	}
 
 	storeJunctionUser, err := storejunctionuser.GetStoreJunctionUserByUserIDAndStoreID(user.ID, storeInfo.ID)
 	if err != nil {
 		err = fmt.Errorf("%s", "You don't have permission in this store")
-		return user, err
+		return user, models.Store{}, err
 	}
 
 	token, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, storeJunctionUser.Role, time.Second*86400)
 	if err != nil {
-		return user, err
+		return user, models.Store{}, err
 	}
 	user.Token = token
 
 	refreshToken, err := jwt.IssueToken(user.ID, user.Email, storeInfo.ID, storeJunctionUser.Role, time.Second*604800)
 	if err != nil {
-		return user, err
+		return user, models.Store{}, err
 	}
 	user.Role = storeJunctionUser.Role
 	user.RefreshToken = refreshToken
 
-	return user, err
+	return user, storeInfo, err
 }
 
 //RegisterForOwner ...

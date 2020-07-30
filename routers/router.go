@@ -1,9 +1,11 @@
 package routers
 
 import (
+	"net/http"
 	merchantController "safe-cash-service/controllers/merchant"
 	notificationController "safe-cash-service/controllers/notification"
 	storeController "safe-cash-service/controllers/store"
+	storeMediaController "safe-cash-service/controllers/storemedia"
 	userController "safe-cash-service/controllers/user"
 	"safe-cash-service/middleware"
 	"time"
@@ -74,6 +76,8 @@ func SetUpRouter() {
 
 			auth.GET("/finger-print", storeController.GetFingerPrint)
 			auth.GET("/store/:store_id", storeController.GetByID)
+			auth.POST("/store/:store_id/medias", storeMediaController.Upload)
+			auth.GET("/store/:store_id/medias", storeMediaController.GetByStoreID)
 			auth.GET("/stores", storeController.GetAllStoresByUserID)
 			auth.POST("/unlock", userController.Unlock)
 			auth.GET("/notifications", userController.GetNotifications)
@@ -86,6 +90,8 @@ func SetUpRouter() {
 			auth.POST("/notification", notificationController.Send)
 		}
 	}
+
+	router.StaticFS("/public", http.Dir("static"))
 
 	err := router.Run(":5000")
 	if err != nil {
