@@ -558,3 +558,5 @@ For porpose of education, you can check more detail in folder setup with docker 
 ]
 ```
 
+**16. Watch file in browser**
+`URL`: `/public/{filename}`
