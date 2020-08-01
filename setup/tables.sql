@@ -259,7 +259,7 @@ CREATE TABLE store_medias (
     deleted_at timestamp,
     name text unique,
     type text,
-    thumbnail text unique,
+    thumbnail text,
     store_id bigint,
     user_id bigint,
     foreign key (user_id) references users(id),

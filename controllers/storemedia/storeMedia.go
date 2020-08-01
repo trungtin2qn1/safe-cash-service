@@ -6,7 +6,6 @@ import (
 	"image/color"
 	"image/png"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -66,6 +65,12 @@ func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID string) (*m
 		if err != nil {
 			return nil, err
 		}
+
+		_, err := storemedia.CreateStoreMedia(thumbnail, ThumbnailVideo, thumbnail, &userID, &storeID)
+		if err != nil {
+			return nil, err
+		}
+
 	}
 
 	media, err := storemedia.CreateStoreMedia(fileName, typeMedia, thumbnail, &userID, &storeID)
@@ -95,8 +100,8 @@ func generateThumbnailFromVideo(fileName string) (string, error) {
 	if err := cmd.Run(); err != nil {
 		return "", err
 	}
-	log.Println("fileName:", fileName)
-	return fileName, nil
+	// log.Println("fileName:", fileName)
+	return outputName + ".png", nil
 }
 
 //Upload :
