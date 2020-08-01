@@ -485,4 +485,76 @@ For porpose of education, you can check more detail in folder setup with docker 
 ]
 ```
 
-**15. Start train model process: (Not implemented yet)**
+**15. Upload media file from services:**
+`URL`: `/services/stores/{store_id}/medias`
+
+`Method`: `GET`
+
+`Header`: 
+
+```json
+{
+    "store_credential": "test",
+    "Content-Type": "multipart/form-data"
+}
+```
+
+`Request`:
+
+```json
+{
+    "screenshot": binary file (image),
+    "video": binary file (video),
+    "user_id": "1620448417",
+    "unlocking_log_id": "1620448417"
+}
+
+`Response:`
+
+```json
+{
+    "message": string
+}
+```
+
+
+**16. Get medias file by unlocking id**
+`URL`: `/apis/auth/store/{store_id}/medias/unlock/{unlock_id}`
+
+`Method`: `GET`
+
+`Param`: 
+
+```json
+{
+    "store_id": anything,
+    "unlock_id": "12312"
+}
+```
+
+`Header`: 
+
+```json
+{
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Response:`
+
+```json
+[
+    {
+        "id": "1620868265",
+        "content": "Vừa có người dùng muốn mở khóa",
+        "method": "face",
+        "is_success": true,
+        "user_id": "1620448417",
+        "created_at": "2020-07-30T18:22:54.42639Z",
+        "updated_at": "2020-07-30T18:22:54.42639Z",
+        "first_name": "Tin",
+        "last_name": "Huynh"
+    }
+]
+```
+

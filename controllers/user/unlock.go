@@ -76,8 +76,8 @@ func Unlock(c *gin.Context) {
 func ListUnlockingLogs(c *gin.Context) {
 	interfaceUserID, _ := c.Get("user_id")
 	userID := fmt.Sprintf("%v", interfaceUserID)
-
-	storeID := c.Query("store_id")
+	interfaceStoreID, _ := c.Get("store_id")
+	storeID := fmt.Sprintf("%v", interfaceStoreID)
 
 	unlockingLogsDisplay := []display.UnlockingLog{}
 	unlockingLogs := []models.UnlockingLog{}
@@ -91,48 +91,28 @@ func ListUnlockingLogs(c *gin.Context) {
 		return
 	}
 
-	// userInfo, err := user.GetUserByID(userID)
-	// if err != nil {
-	// 	c.JSON(http.StatusServiceUnavailable, gin.H{
-	// 		"message": "Can't find user",
-	// 	})
-	// 	return
-	// }
+	storeJunctionUser, err := storejunctionuser.GetStoreJunctionUserByUserIDAndStoreID(userID, storeID)
+	if err != nil || storeJunctionUser.ID == "" {
+		c.JSON(http.StatusServiceUnavailable, gin.H{
+			"message": "User don't belong to this store",
+		})
+		return
+	}
 
-	if storeID != "" {
+	users, err := user.GetUsersByStoreID(storeID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Server is busy",
+		})
+		return
+	}
 
-		storeJunctionUser, err := storejunctionuser.GetStoreJunctionUserByUserIDAndStoreID(userID, storeID)
-		if err != nil || storeJunctionUser.ID == "" {
-			c.JSON(http.StatusServiceUnavailable, gin.H{
-				"message": "User don't belong to this store",
-			})
-			return
-		}
-
-		users, err := user.GetUsersByStoreID(storeID)
+	for _, v := range users {
+		logs, err := unlockinglog.GetUnlockingLogsByUserID(v.ID, support.Date)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": "Server is busy",
-			})
-			return
+			continue
 		}
-
-		for _, v := range users {
-			logs, err := unlockinglog.GetUnlockingLogsByUserID(v.ID)
-			if err != nil {
-				continue
-			}
-			unlockingLogs = append(unlockingLogs, logs...)
-		}
-
-	} else {
-		unlockingLogs, err = unlockinglog.GetUnlockingLogsByUserID(userID)
-		if err != nil {
-			c.JSON(http.StatusServiceUnavailable, gin.H{
-				"message": "Server is busy",
-			})
-			return
-		}
+		unlockingLogs = append(unlockingLogs, logs...)
 	}
 
 	for _, v := range unlockingLogs {

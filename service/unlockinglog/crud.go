@@ -32,10 +32,17 @@ func GetUnlockingLogByID(id string) (models.UnlockingLog, error) {
 }
 
 //GetUnlockingLogsByUserID ...
-func GetUnlockingLogsByUserID(userID string) ([]models.UnlockingLog, error) {
+func GetUnlockingLogsByUserID(userID, date string) ([]models.UnlockingLog, error) {
 	res := []models.UnlockingLog{}
 
 	dbConn := db.GetDB()
+
+	if date != "" {
+		from := date + " 00:00:00"
+		to := date + " 23:59:59"
+		dbConn = dbConn.Where("created_at between ? and ?", from, to)
+	}
+
 	dbConn = dbConn.
 		Order("id desc").
 		Where("user_id = ?", userID).Find(&res)
@@ -64,8 +71,9 @@ func GetUnlockingLogsByUserIDAndDate(userID, date string) ([]models.UnlockingLog
 
 //GetSupport ...
 type GetSupport struct {
-	Offset int `json:"offset,omitempty" form:"offset,omitempty"`
-	Limit  int `json:"limit,omitempty" form:"limit,omitempty"`
+	Date   string `json:"date,omitempty" form:"date,omitempty"`
+	Offset int    `json:"offset,omitempty" form:"offset,omitempty"`
+	Limit  int    `json:"limit,omitempty" form:"limit,omitempty"`
 }
 
 //getDefault ...

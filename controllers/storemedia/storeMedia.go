@@ -22,8 +22,10 @@ import (
 )
 
 const (
-	Image = "image"
-	Video = "video"
+	Image          = "image"
+	Video          = "video"
+	Screenshot     = "screenshot"
+	ThumbnailVideo = "thumbnail_video"
 )
 
 //handleFormFile ...
@@ -99,8 +101,7 @@ func generateThumbnailFromVideo(fileName string) (string, error) {
 
 //Upload :
 func Upload(c *gin.Context) {
-	interfaceUserID, _ := c.Get("user_id")
-	userID := fmt.Sprintf("%v", interfaceUserID)
+
 	interfaceStoreID, _ := c.Get("store_id")
 	storeID := fmt.Sprintf("%v", interfaceStoreID)
 
@@ -112,7 +113,15 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	snapShotMedia, err := handleFormFile(c, "snap_shot_desktop", userID, storeID)
+	userID, ok := c.GetPostForm("user_id")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+
+	screenshotMedia, err := handleFormFile(c, "screenshot", userID, storeID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -120,8 +129,8 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	if snapShotMedia != nil {
-		_, err := storemedia.CreateMediaUnlockingLog(&snapShotMedia.ID, &unlockingLogID)
+	if screenshotMedia != nil {
+		_, err := storemedia.CreateMediaUnlockingLog(&screenshotMedia.ID, &unlockingLogID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": fmt.Sprintf("%s", err),
@@ -195,10 +204,35 @@ func GetByStoreID(c *gin.Context) {
 		if err != nil {
 			continue
 		}
+		storeMediaDisplay.CreatedAt = v.CreatedAt
+		storeMediaDisplay.UpdatedAt = v.UpdatedAt
 		storeMediaDisplay.Username = userInfo.FirstName + " " + userInfo.LastName
 		storeMediaDisplay.IsSuccess = *v.IsSuccess
 		storeMediasDisplay = append(storeMediasDisplay, storeMediaDisplay)
 	}
 
 	c.JSON(http.StatusOK, storeMediasDisplay)
+}
+
+//GetByUnlockingID ...
+func GetByUnlockingID(c *gin.Context) {
+	unlockingLogID := c.Param("unlock_id")
+	mediaUnlockingLog, err := storemedia.GetMediaUnlockingLogByUnlockingLogID(unlockingLogID)
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+	storeMedias := []models.StoreMedia{}
+	for _, v := range mediaUnlockingLog {
+		storeMedia, err := storemedia.GetByID(*v.StoreMediaID)
+		if err != nil {
+			continue
+		}
+		storeMedias = append(storeMedias, storeMedia)
+	}
+
+	c.JSON(http.StatusOK, storeMedias)
+
 }
