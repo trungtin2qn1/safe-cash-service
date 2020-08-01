@@ -78,7 +78,7 @@ func SetUpRouter() {
 			auth.GET("/finger-print", storeController.GetFingerPrint)
 			auth.GET("/store/:store_id", storeController.GetByID)
 			auth.GET("/store/:store_id/medias", storeMediaController.GetByStoreID)
-			auth.GET("/store/:store_id/medias/unlock/:unlock_id", storeMediaController.GetByUnlockingID)
+			auth.GET("/store/:store_id/unlock/:unlock_id/medias", storeMediaController.GetByUnlockingID)
 			auth.GET("/stores", storeController.GetAllStoresByUserID)
 			auth.POST("/unlock", userController.Unlock)
 			auth.GET("/notifications", userController.GetNotifications)

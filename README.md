@@ -522,7 +522,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 
 **16. Get medias file by unlocking id**
 
-`URL`: `/apis/auth/store/{store_id}/medias/unlock/{unlock_id}`
+`URL`: `/apis/auth/store/{store_id}/unlock/{unlock_id}/medias`
 
 `Method`: `GET`
 
