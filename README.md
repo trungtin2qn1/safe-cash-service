@@ -509,6 +509,7 @@ For porpose of education, you can check more detail in folder setup with docker 
     "user_id": "1620448417",
     "unlocking_log_id": "1620448417"
 }
+```
 
 `Response:`
 
