@@ -486,6 +486,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 ```
 
 **15. Upload media file from services:**
+
 `URL`: `/services/stores/{store_id}/medias`
 
 `Method`: `GET`
@@ -519,6 +520,7 @@ For porpose of education, you can check more detail in folder setup with docker 
 
 
 **16. Get medias file by unlocking id**
+
 `URL`: `/apis/auth/store/{store_id}/medias/unlock/{unlock_id}`
 
 `Method`: `GET`
@@ -559,4 +561,5 @@ For porpose of education, you can check more detail in folder setup with docker 
 ```
 
 **16. Watch file in browser**
+
 `URL`: `/public/{filename}`
