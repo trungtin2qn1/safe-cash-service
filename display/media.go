@@ -14,6 +14,7 @@ type StoreMedia struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 	Method    string     `json:"method"`
+	UnlockID  string     `json:"unlock_id"`
 }
 
 //Image :

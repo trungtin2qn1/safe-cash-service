@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"image/png"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -68,11 +69,17 @@ func handleFormFile(c *gin.Context, fileNameRequest, storeID, unlockingLogID str
 
 	typeMedia := ""
 	thumbnail := ""
-	if strings.HasPrefix(header.Header.Get("Content-type"), Image) {
+
+	log.Println("Content-type:", header.Header.Get("Content-type"))
+
+	if strings.HasPrefix(header.Header.Get("Content-type"), Image) || strings.HasSuffix(fileName, "png") ||
+		strings.HasSuffix(fileName, "jpeg") || strings.HasSuffix(fileName, "jpg") {
 		typeMedia = Image
 		thumbnail = fileName
 	}
-	if strings.HasPrefix(header.Header.Get("Content-type"), Video) {
+
+	if strings.HasPrefix(header.Header.Get("Content-type"), Video) ||
+		strings.HasSuffix(fileName, "mp4") || strings.HasSuffix(fileName, "avi") {
 		typeMedia = Video
 		thumbnail, err = generateThumbnailFromVideo(fileName)
 		if err != nil {
@@ -204,17 +211,21 @@ func GetByStoreID(c *gin.Context) {
 				continue
 			}
 
-			if storeMedia.Type != Video {
-				img := display.Image{
-					URL:  Host + storeMedia.Name,
-					Type: storeMedia.Type,
-				}
-				storeMediaDisplay.Images = append(storeMediaDisplay.Images, img)
-			} else {
+			log.Println("storeMedia.Name:", storeMedia.Name)
+
+			if storeMedia.Type == Video {
 				video := display.Video{
 					URL: Host + storeMedia.Name,
 				}
 				storeMediaDisplay.Videos = append(storeMediaDisplay.Videos, video)
+			} else {
+				if storeMedia.Type == Image || storeMedia.Type == ThumbnailVideo {
+					img := display.Image{
+						URL:  Host + storeMedia.Name,
+						Type: storeMedia.Type,
+					}
+					storeMediaDisplay.Images = append(storeMediaDisplay.Images, img)
+				}
 			}
 
 			// storeMediaDisplay.Medias = append(storeMediaDisplay.Medias, storeMedia)
@@ -223,6 +234,7 @@ func GetByStoreID(c *gin.Context) {
 		if err != nil {
 			continue
 		}
+		storeMediaDisplay.UnlockID = v.ID
 		storeMediaDisplay.Method = v.Method
 		storeMediaDisplay.CreatedAt = v.CreatedAt
 		storeMediaDisplay.UpdatedAt = v.UpdatedAt

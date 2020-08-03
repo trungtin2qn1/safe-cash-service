@@ -120,7 +120,8 @@ CREATE TABLE users (
     password text,
     username text,
     avatar text,
-    role text
+    role text,
+    position int
 );
 
 --Create table store_junction_users
