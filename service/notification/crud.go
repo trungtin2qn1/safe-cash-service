@@ -49,6 +49,18 @@ func GetByUserID(userID string, support GetSupport) ([]models.Notification, erro
 	return notifications, dbConn.Error
 }
 
+//DeleteByValue :
+func DeleteByValue(value string) error {
+	notificationToken := models.NotificationToken{}
+
+	dbConn := db.GetDB()
+
+	dbConn.Where("value = ?", value).Find(&notificationToken)
+	dbConn = dbConn.Unscoped().Delete(&notificationToken)
+
+	return dbConn.Error
+}
+
 //GetByID ...
 func GetByID(id string) (models.Notification, error) {
 

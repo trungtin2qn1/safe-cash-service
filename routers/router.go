@@ -88,7 +88,7 @@ func SetUpRouter() {
 			auth.PUT("/notification/:notification_id", userController.UpdateNotificationStatus)
 			auth.GET("/staffs", merchantController.GetStaffsInStore)
 			auth.POST("/train-model") // Not implemented yet
-			auth.POST("/log-out", userController.LogOut)
+			auth.DELETE("/log-out", userController.LogOut)
 
 			auth.POST("/notification/token", notificationController.SaveToken)
 			auth.POST("/notification", notificationController.Send)

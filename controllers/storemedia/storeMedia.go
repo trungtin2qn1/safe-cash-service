@@ -30,8 +30,8 @@ const (
 	// FileDir        = "/smart-withdrawal/static"
 	// ParentFileDir  = "/smart-withdrawal"
 	FileDir = "static"
-	// Host    = "http://35.240.249.239:5000/public/"
-	Host = "http://localhost:5000/public"
+	Host    = "http://35.240.249.239:5000/public/"
+	// Host    = "http://localhost:5000/public"
 )
 
 //handleFormFile ...
