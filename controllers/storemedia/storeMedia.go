@@ -67,20 +67,20 @@ func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID, unlockingL
 	}
 	if strings.HasPrefix(header.Header.Get("Content-type"), Video) {
 		typeMedia = Video
-		// thumbnail, err = generateThumbnailFromVideo(fileName)
-		// if err != nil {
-		// 	return nil, err
-		// }
+		thumbnail, err = generateThumbnailFromVideo(fileName)
+		if err != nil {
+			return nil, err
+		}
 
-		// media, err := storemedia.CreateStoreMedia(thumbnail, ThumbnailVideo, thumbnail, &userID, &storeID)
-		// if err != nil {
-		// 	return nil, err
-		// }
+		media, err := storemedia.CreateStoreMedia(thumbnail, ThumbnailVideo, thumbnail, &userID, &storeID)
+		if err != nil {
+			return nil, err
+		}
 
-		// _, err = storemedia.CreateMediaUnlockingLog(&media.ID, &unlockingLogID)
-		// if err != nil {
-		// 	return nil, err
-		// }
+		_, err = storemedia.CreateMediaUnlockingLog(&media.ID, &unlockingLogID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	media, err := storemedia.CreateStoreMedia(fileName, typeMedia, thumbnail, &userID, &storeID)
