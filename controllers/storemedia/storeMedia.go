@@ -229,13 +229,13 @@ func GetByStoreID(c *gin.Context) {
 
 			if storeMedia.Type != Video {
 				img := display.Image{
-					URL:  storeMedia.Name,
+					URL:  Host + storeMedia.Name,
 					Type: storeMedia.Type,
 				}
 				storeMediaDisplay.Images = append(storeMediaDisplay.Images, img)
 			} else {
 				video := display.Video{
-					URL: storeMedia.Name,
+					URL: Host + storeMedia.Name,
 				}
 				storeMediaDisplay.Videos = append(storeMediaDisplay.Videos, video)
 			}
