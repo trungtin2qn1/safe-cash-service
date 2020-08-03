@@ -214,6 +214,9 @@ func GetByStoreID(c *gin.Context) {
 
 	for _, v := range unLockingLogs {
 		storeMediaDisplay := display.StoreMedia{}
+		storeMediaDisplay.Images = []display.Image{}
+		storeMediaDisplay.Videos = []display.Video{}
+
 		mediaUnlockingLog, err := storemedia.GetMediaUnlockingLogByUnlockingLogID(v.ID)
 		if err != nil {
 			continue
@@ -223,12 +226,27 @@ func GetByStoreID(c *gin.Context) {
 			if err != nil {
 				continue
 			}
-			storeMediaDisplay.Medias = append(storeMediaDisplay.Medias, storeMedia)
+
+			if storeMedia.Type != Video {
+				img := display.Image{
+					URL:  storeMedia.Name,
+					Type: storeMedia.Type,
+				}
+				storeMediaDisplay.Images = append(storeMediaDisplay.Images, img)
+			} else {
+				video := display.Video{
+					URL: storeMedia.Name,
+				}
+				storeMediaDisplay.Videos = append(storeMediaDisplay.Videos, video)
+			}
+
+			// storeMediaDisplay.Medias = append(storeMediaDisplay.Medias, storeMedia)
 		}
 		userInfo, err := user.GetUserByID(*v.UserID)
 		if err != nil {
 			continue
 		}
+		storeMediaDisplay.Method = v.Method
 		storeMediaDisplay.CreatedAt = v.CreatedAt
 		storeMediaDisplay.UpdatedAt = v.UpdatedAt
 		storeMediaDisplay.Username = userInfo.FirstName + " " + userInfo.LastName
