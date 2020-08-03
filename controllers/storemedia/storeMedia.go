@@ -6,7 +6,6 @@ import (
 	"image/color"
 	"image/png"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -26,16 +25,13 @@ const (
 	Video          = "video"
 	Screenshot     = "screenshot"
 	ThumbnailVideo = "thumbnail_video"
-	// ParentFileDir  = "/smart-withdrawal"
-	// FileDir        = "/smart-withdrawal/static"
-	// ParentFileDir  = "/smart-withdrawal"
-	FileDir = "static"
-	Host    = "http://35.240.249.239:5000/public/"
+	FileDir        = "static"
+	Host           = "http://35.240.249.239:5000/public/"
 	// Host    = "http://localhost:5000/public"
 )
 
 //handleFormFile ...
-func handleFormFile(c *gin.Context, fileNameRequest string, userID *string, storeID, unlockingLogID string) (*models.StoreMedia, error) {
+func handleFormFile(c *gin.Context, fileNameRequest, storeID, unlockingLogID string) (*models.StoreMedia, error) {
 	file, header, err := c.Request.FormFile(fileNameRequest)
 	if err != nil {
 		if file == nil {
@@ -58,6 +54,16 @@ func handleFormFile(c *gin.Context, fileNameRequest string, userID *string, stor
 	_, err = io.Copy(out, file)
 	if err != nil {
 		return nil, err
+	}
+
+	unlockingLog, err := unlockinglog.GetUnlockingLogByID(unlockingLogID)
+	if err != nil {
+		return nil, err
+	}
+	var userID *string
+	if unlockingLog.ID != "" {
+		userID = new(string)
+		*userID = *unlockingLog.UserID
 	}
 
 	typeMedia := ""
@@ -134,18 +140,10 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	userIDStr, _ := c.GetPostForm("user_id")
-	var userID *string
-	if userIDStr != "" {
-		userID = new(string)
-		*userID = userIDStr
-	}
-
 	if _, err := os.Stat(FileDir); os.IsNotExist(err) {
 		os.Mkdir(FileDir, 0700)
-		log.Println(11)
 	}
-	_, err := handleFormFile(c, "screenshot", userID, storeID, unlockingLogID)
+	_, err := handleFormFile(c, "screenshot", storeID, unlockingLogID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -153,7 +151,7 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	_, err = handleFormFile(c, "video", userID, storeID, unlockingLogID)
+	_, err = handleFormFile(c, "video", storeID, unlockingLogID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),

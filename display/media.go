@@ -26,32 +26,3 @@ type Image struct {
 type Video struct {
 	URL string `json:"url"`
 }
-
-// [
-// 	{
-// 		"images": [
-// 			{
-// 				"url": "image"
-// 			}
-// 		]
-// 		"video": {
-// 			{
-// 				"url": "video"
-// 			}
-// 		}
-// 		// "medias": [
-// 		// 	{
-// 		// 		"url": "",
-// 		// 		"type": ""
-// 		// 	},
-// 		// 	{
-// 		// 		"type": "",
-// 		// 		"url": ""
-// 		// 	}
-// 		// ],
-// 		"username": "Tin Huynh",
-// 		"created_at": "2020-08-03",
-// 		"is_success": true,
-// 		"method": "face"
-// 	}
-// ]
