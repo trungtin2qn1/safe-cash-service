@@ -548,15 +548,34 @@ For porpose of education, you can check more detail in folder setup with docker 
 ```json
 [
     {
-        "id": "1620868265",
-        "content": "Vừa có người dùng muốn mở khóa",
-        "method": "face",
-        "is_success": true,
-        "user_id": "1620448417",
-        "created_at": "2020-07-30T18:22:54.42639Z",
-        "updated_at": "2020-07-30T18:22:54.42639Z",
-        "first_name": "Tin",
-        "last_name": "Huynh"
+        "id": "1621330090",
+        "name": "http://35.240.249.239:5000/public/e8171cb5-3b3e-435c-8f20-0fa0c2e7e6a3.jpg",
+        "type": "image",
+        "thumbnail": "e8171cb5-3b3e-435c-8f20-0fa0c2e7e6a3.jpg",
+        "user_id": "1620869281",
+        "store_id": "1620869283",
+        "created_at": "2020-08-03T16:31:48.281135Z",
+        "updated_at": "2020-08-03T16:31:48.281135Z"
+    },
+    {
+        "id": "1621330091",
+        "name": "http://35.240.249.239:5000/public/2cc23652-c633-4e9b-8f77-47596f0d5ace.png",
+        "type": "thumbnail_video",
+        "thumbnail": "2cc23652-c633-4e9b-8f77-47596f0d5ace.png",
+        "user_id": "1620869281",
+        "store_id": "1620869283",
+        "created_at": "2020-08-03T16:31:50.564507Z",
+        "updated_at": "2020-08-03T16:31:50.564507Z"
+    },
+    {
+        "id": "1621330092",
+        "name": "http://35.240.249.239:5000/public/41abaa06-c665-41e5-91a2-440f0d53d2e7.mp4",
+        "type": "video",
+        "thumbnail": "2cc23652-c633-4e9b-8f77-47596f0d5ace.png",
+        "user_id": "1620869281",
+        "store_id": "1620869283",
+        "created_at": "2020-08-03T16:31:50.646623Z",
+        "updated_at": "2020-08-03T16:31:50.646623Z"
     }
 ]
 ```

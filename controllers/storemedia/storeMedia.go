@@ -30,7 +30,8 @@ const (
 	// FileDir        = "/smart-withdrawal/static"
 	// ParentFileDir  = "/smart-withdrawal"
 	FileDir = "static"
-	Server  = "http://35.240.249.239:5000/public/"
+	// Host    = "http://35.240.249.239:5000/public/"
+	Host = "http://localhost:5000/public"
 )
 
 //handleFormFile ...
@@ -255,7 +256,7 @@ func GetByUnlockingID(c *gin.Context) {
 		if err != nil {
 			continue
 		}
-		storeMedia.Name = Server + storeMedia.Name
+		storeMedia.Name = Host + storeMedia.Name
 		storeMedias = append(storeMedias, storeMedia)
 	}
 
