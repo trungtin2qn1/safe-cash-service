@@ -7,80 +7,81 @@ import (
 	"safe-cash-service/display"
 	"safe-cash-service/models"
 	"safe-cash-service/service/notification"
-	"safe-cash-service/service/storejunctionuser"
 	"safe-cash-service/service/unlockinglog"
 	"safe-cash-service/service/user"
 
 	"github.com/gin-gonic/gin"
 )
 
-//Unlock ...
-func Unlock(c *gin.Context) {
-	interfaceUserID, _ := c.Get("user_id")
-	userID := fmt.Sprintf("%v", interfaceUserID)
+// //Unlock ...
+// func Unlock(c *gin.Context) {
+// 	interfaceUserID, _ := c.Get("user_id")
+// 	userID := fmt.Sprintf("%v", interfaceUserID)
 
-	unlockingLog := models.UnlockingLog{}
+// 	unlockingLog := models.UnlockingLog{}
 
-	err := c.ShouldBind(&unlockingLog)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": fmt.Sprintf("%s", err),
-		})
-		return
-	}
+// 	err := c.ShouldBind(&unlockingLog)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"message": fmt.Sprintf("%s", err),
+// 		})
+// 		return
+// 	}
 
-	userInfo, err := user.GetUserByID(userID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": fmt.Sprintf("%s", err),
-		})
-		return
-	}
+// 	userInfo, err := user.GetUserByID(userID)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"message": fmt.Sprintf("%s", err),
+// 		})
+// 		return
+// 	}
 
-	//Create unlocking log
-	unlockingLogInfo, err := unlockinglog.CreateUnlockingLog(unlockingLog.Content, unlockingLog.Method, *unlockingLog.IsSuccess, &userInfo.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": fmt.Sprintf("%s", err),
-		})
-		return
-	}
+// 	log.Println("*unlockingLog.IsSuccess:", *unlockingLog.IsSuccess)
 
-	// Send notification to mobile app
-	go func(userID string) {
-		notiTokens, err := notification.GetOwnerStoreNotificationByUserID(userID)
-		if err != nil {
-			log.Println(err)
-			return
-		}
+// 	//Create unlocking log
+// 	unlockingLogInfo, err := unlockinglog.CreateUnlockingLog(unlockingLog.Content, unlockingLog.Method, *unlockingLog.IsSuccess, &userInfo.ID)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"message": fmt.Sprintf("%s", err),
+// 		})
+// 		return
+// 	}
 
-		for _, notiToken := range notiTokens {
-			err := notification.Send(notiToken, "Có ai đó đã cố mở khóa", "Có ai đó đã cố mở khóa")
-			if err != nil {
-				continue
-			}
-		}
+// 	// Send notification to mobile app
+// 	go func(userID string) {
+// 		notiTokens, err := notification.GetOwnerStoreNotificationByUserID(userID)
+// 		if err != nil {
+// 			log.Println(err)
+// 			return
+// 		}
 
-		_, err = notification.Create("Có ai đó đã cố mở khóa", unlockingLog.Content, &userID)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-	}(userInfo.ID)
+// 		for _, notiToken := range notiTokens {
+// 			err := notification.Send(notiToken, "Có ai đó đã cố mở khóa", "Có ai đó đã cố mở khóa")
+// 			if err != nil {
+// 				continue
+// 			}
+// 		}
 
-	c.JSON(200, unlockingLogInfo)
+// 		_, err = notification.Create("Có ai đó đã cố mở khóa", unlockingLog.Content, &userID)
+// 		if err != nil {
+// 			log.Println(err)
+// 			return
+// 		}
+// 	}(userInfo.ID)
 
-}
+// 	c.JSON(200, unlockingLogInfo)
+
+// }
 
 //ListUnlockingLogs ...
 func ListUnlockingLogs(c *gin.Context) {
-	interfaceUserID, _ := c.Get("user_id")
-	userID := fmt.Sprintf("%v", interfaceUserID)
+	// interfaceUserID, _ := c.Get("user_id")
+	// userID := fmt.Sprintf("%v", interfaceUserID)
 	interfaceStoreID, _ := c.Get("store_id")
 	storeID := fmt.Sprintf("%v", interfaceStoreID)
 
 	unlockingLogsDisplay := []display.UnlockingLog{}
-	unlockingLogs := []models.UnlockingLog{}
+	// unlockingLogs := []models.UnlockingLog{}
 
 	support := &unlockinglog.GetSupport{}
 	err := c.ShouldBindQuery(&support)
@@ -91,15 +92,33 @@ func ListUnlockingLogs(c *gin.Context) {
 		return
 	}
 
-	storeJunctionUser, err := storejunctionuser.GetStoreJunctionUserByUserIDAndStoreID(userID, storeID)
-	if err != nil || storeJunctionUser.ID == "" {
-		c.JSON(http.StatusServiceUnavailable, gin.H{
-			"message": "User don't belong to this store",
-		})
-		return
-	}
+	date := c.Query("date")
 
-	users, err := user.GetUsersByStoreID(storeID)
+	// storeJunctionUser, err := storejunctionuser.GetStoreJunctionUserByUserIDAndStoreID(userID, storeID)
+	// if err != nil || storeJunctionUser.ID == "" {
+	// 	c.JSON(http.StatusServiceUnavailable, gin.H{
+	// 		"message": "User don't belong to this store",
+	// 	})
+	// 	return
+	// }
+
+	// users, err := user.GetUsersByStoreID(storeID)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"message": "Server is busy",
+	// 	})
+	// 	return
+	// }
+
+	// for _, v := range users {
+	// 	logs, err := unlockinglog.GetUnlockingLogsByUserID(v.ID, support.Date)
+	// 	if err != nil {
+	// 		continue
+	// 	}
+	// 	unlockingLogs = append(unlockingLogs, logs...)
+	// }
+
+	unlockingLogs, err := unlockinglog.GetUnlockingLogsByStoreID(storeID, date)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Server is busy",
@@ -107,25 +126,20 @@ func ListUnlockingLogs(c *gin.Context) {
 		return
 	}
 
-	for _, v := range users {
-		logs, err := unlockinglog.GetUnlockingLogsByUserID(v.ID, support.Date)
-		if err != nil {
-			continue
-		}
-		unlockingLogs = append(unlockingLogs, logs...)
-	}
-
 	for _, v := range unlockingLogs {
-
-		userInfo, err := user.GetUserByID(*v.UserID)
-		if err != nil {
-			continue
-		}
 
 		unlockingLogDisplay := display.UnlockingLog{
 			UnlockingLog: v,
-			FirstName:    userInfo.FirstName,
-			LastName:     userInfo.LastName,
+		}
+
+		if v.UserID != nil {
+			userInfo, err := user.GetUserByID(*v.UserID)
+			if err != nil {
+				continue
+			}
+
+			unlockingLogDisplay.FirstName = userInfo.FirstName
+			unlockingLogDisplay.LastName = userInfo.LastName
 		}
 
 		unlockingLogsDisplay = append(unlockingLogsDisplay, unlockingLogDisplay)
@@ -155,7 +169,8 @@ func UnlockByService(c *gin.Context) {
 	}
 
 	//Create unlocking log
-	unlockingLogInfo, err := unlockinglog.CreateUnlockingLog(unlockingLog.Content, unlockingLog.Method, *unlockingLog.IsSuccess, unlockingLog.UserID)
+	unlockingLogInfo, err := unlockinglog.CreateUnlockingLog(unlockingLog.Content, unlockingLog.Method, *unlockingLog.IsSuccess,
+		unlockingLog.UserID, &storeID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),

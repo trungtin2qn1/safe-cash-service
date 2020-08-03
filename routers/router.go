@@ -82,7 +82,7 @@ func SetUpRouter() {
 			auth.GET("/store/:store_id/medias", storeMediaController.GetByStoreID)
 			auth.GET("/store/:store_id/unlock/:unlock_id/medias", storeMediaController.GetByUnlockingID)
 			auth.GET("/stores", storeController.GetAllStoresByUserID)
-			auth.POST("/unlock", userController.Unlock)
+			// auth.POST("/unlock", userController.Unlock)
 			auth.GET("/notifications", userController.GetNotifications)
 			auth.GET("/unlock/logs", userController.ListUnlockingLogs)
 			auth.PUT("/notification/:notification_id", userController.UpdateNotificationStatus)

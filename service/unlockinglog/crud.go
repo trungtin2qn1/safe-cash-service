@@ -6,12 +6,13 @@ import (
 )
 
 //CreateUnlockingLog ...
-func CreateUnlockingLog(content, method string, isSuccess bool, userID *string) (models.UnlockingLog, error) {
+func CreateUnlockingLog(content, method string, isSuccess bool, userID, storeID *string) (models.UnlockingLog, error) {
 	unlockingLog := models.UnlockingLog{
 		Content:   content,
 		IsSuccess: &isSuccess,
 		UserID:    userID,
 		Method:    method,
+		StoreID:   storeID,
 	}
 
 	dbConn := db.GetDB()
@@ -27,6 +28,25 @@ func GetUnlockingLogByID(id string) (models.UnlockingLog, error) {
 
 	dbConn := db.GetDB()
 	dbConn = dbConn.Where("id = ?", id).Find(&res)
+
+	return res, nil
+}
+
+//GetUnlockingLogsByStoreID ...
+func GetUnlockingLogsByStoreID(storeID, date string) ([]models.UnlockingLog, error) {
+	res := []models.UnlockingLog{}
+
+	dbConn := db.GetDB()
+
+	if date != "" {
+		from := date + " 00:00:00"
+		to := date + " 23:59:59"
+		dbConn = dbConn.Where("created_at between ? and ?", from, to)
+	}
+
+	dbConn = dbConn.
+		Order("id desc").
+		Where("store_id = ?", storeID).Find(&res)
 
 	return res, nil
 }

@@ -229,6 +229,8 @@ CREATE TABLE unlocking_logs (
     method text,
     is_success boolean,
     user_id bigint,
+    store_id bigint,
+    foreign key (store_id) references stores(id),
     foreign key (user_id) references users(id)
 );
 
