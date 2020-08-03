@@ -580,6 +580,214 @@ For porpose of education, you can check more detail in folder setup with docker 
 ]
 ```
 
-**16. Watch file in browser**
+**17. Get medias by store id**
 
-`URL`: `/public/{filename}`
+`URL`: `/apis/auth/store/{store_id}/medias`
+
+`Method`: `GET`
+
+`Param`: 
+
+```json
+{
+    "store_id": anything
+}
+```
+
+`Header`: 
+
+```json
+{
+    "Authorization": "Tin eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzMiLCJlbWFpbCI6InRydW5ndGluMnFuMUBnbWFpbC5jb20iLCJzdG9yZV9pZCI6IjE1NzkwMzQzNjI2MTgzMTk4NzUiLCJleHAiOjE1OTE0NjAxMjEsImlzcyI6IlRpbiJ9.cT_Hycmc__2hD4nKGZrPYW9F3BwIa5PTok5EaHQWXo6mbwoqP4hJajckxujVpftSc36t7qGkvRvpFDe_ejk9tX_4COLe6HBx81gVYE5dnRDWPlvgkdoAN4lN3Y5l3y5ERGnL0hXrKP54TsITl5p0BV4ys2IClS5mANPRPOKoCSYYUy_VvqI52yHV5JxVsOVy7HpMRl4JpEkArL0vNTWFGzrl6XvpiLO913PLd5Cw1p1k78AKo_cWVqMm_1j0pw5IMR1fuQtHH64FLIY9xO-UZww_j4bVMEFsIHGh0UopmKc7AWUnirGRakCDwJOCkzQ0JPV92YhDt1CtBIB6uQ0louFeNPtq7f5l7ni1q6Vt8z8tBo4YVDEKKRchXhrqm2XQ1vZBDOmpM8K_XMFUCq-twRgpv5sBZDE1ANu20Kal6yJUyUmcGKLmxveg6vHvE9oSzCBr380hfgrtrTeqd_Xdi45iqCuMhC8UeWKokmwwr-DykYyAnjtCnQms23PlmzVj8vIS5sfZVPEfmHbUDCioQEbvM7lw3Gr1Z2l2LASGP3-P5xQZ6FSqgSSHq-m7tNA76-6HvMljXh5yZrGtGDQ8Jv35ZeMKSAdo-kYdjTxOqiUZHtAl43bkInehCVFpL_glZg8l2cmo0n_87sTeoe41oQcizk_XyIeZCwtMD5iOj-8"
+}
+```
+
+`Response:`
+
+```json
+[
+    {
+        "images": [
+            {
+                "url": "ef4052c9-8072-4fb9-8da7-4d17e95527b4.jpg",
+                "type": "image"
+            },
+            {
+                "url": "a170c219-d4b8-4cb5-a22b-09416a31e649.png",
+                "type": "thumbnail_video"
+            },
+            {
+                "url": "27b9bf92-0084-4fc3-b577-e64377ca967f.jpg",
+                "type": "image"
+            },
+            {
+                "url": "e6efa47c-3dac-4ea5-a0f4-36b8d2d8600d.png",
+                "type": "thumbnail_video"
+            },
+            {
+                "url": "2cbcb108-0927-4a40-98b1-2fab11611d0a.jpg",
+                "type": "image"
+            },
+            {
+                "url": "28621fae-bdb9-4d9e-93cb-be0095eebac3.png",
+                "type": "thumbnail_video"
+            },
+            {
+                "url": "ee044430-dfe9-4b26-8fa6-3763970f69d2.jpg",
+                "type": "image"
+            },
+            {
+                "url": "11b4e069-5977-4f84-9356-4f33ab82a065.png",
+                "type": "thumbnail_video"
+            },
+            {
+                "url": "99ee8a5d-0f3c-4f6b-a819-3954d22d6030.jpg",
+                "type": "image"
+            },
+            {
+                "url": "db609b12-0461-4e69-a45c-697dda5c6b10.png",
+                "type": "thumbnail_video"
+            },
+            {
+                "url": "79c186a0-df4b-4e4b-b626-a7a2cf4e13c1.jpg",
+                "type": "image"
+            },
+            {
+                "url": "cd7b81cb-90f0-4d52-b83f-b642508e3ecf.png",
+                "type": "thumbnail_video"
+            },
+            {
+                "url": "fe90b1b9-4d7a-4213-b0af-23c4309bb6af.jpg",
+                "type": "image"
+            },
+            {
+                "url": "b89d5263-75ac-4847-bd93-bdeeac27d65f.png",
+                "type": "thumbnail_video"
+            },
+            {
+                "url": "ad7dab37-82e6-4de5-b92f-c4f950b438df.jpg",
+                "type": "image"
+            },
+            {
+                "url": "e43e0795-d56b-46e0-b568-f8d6fada2af2.png",
+                "type": "thumbnail_video"
+            },
+            {
+                "url": "cf3d35e6-d290-4629-9f90-b7b0033ba3f4.jpg",
+                "type": "image"
+            },
+            {
+                "url": "af01881f-9d76-4d62-b062-213762dac236.jpg",
+                "type": "image"
+            },
+            {
+                "url": "dce46d9c-0156-42cb-8e6e-846ce29a21bb.jpg",
+                "type": "image"
+            }
+        ],
+        "videos": [
+            {
+                "url": "e6343a50-d309-4e4c-9432-9e050fe44b81.mp4"
+            },
+            {
+                "url": "d110538d-3b94-4a6c-a39b-94ebc1fd1512.mp4"
+            },
+            {
+                "url": "734b205a-06d7-4485-9cfb-281e49712890.mp4"
+            },
+            {
+                "url": "d3cb697e-f75f-4dba-8069-d8c240e82ed4.mp4"
+            },
+            {
+                "url": "9a0e5637-075b-4461-9a0f-b9b4a0c71144.mp4"
+            },
+            {
+                "url": "e2e9c186-4e3b-4a83-8cd0-d532cf567260.mp4"
+            },
+            {
+                "url": "caf9cb2a-cbb3-427e-a89a-47f44c214f25.mp4"
+            },
+            {
+                "url": "c0c71976-0940-4b38-8109-223c817307bc.mp4"
+            },
+            {
+                "url": "62fb7a66-ae27-4c7a-b19a-c0456f784623.mp4"
+            },
+            {
+                "url": "7688b833-0833-4753-8060-1e15011dea5c.mp4"
+            },
+            {
+                "url": "792e76a3-5d8a-4b8d-96ef-299c37341c01.mp4"
+            }
+        ],
+        "is_success": true,
+        "username": "Tin Huynh",
+        "created_at": "2020-07-30T18:22:54.42639Z",
+        "updated_at": "2020-07-30T18:22:54.42639Z",
+        "method": "face"
+    },
+    {
+        "images": [],
+        "videos": [],
+        "is_success": true,
+        "username": "Tin Huynh",
+        "created_at": "2020-07-29T18:22:50.334872Z",
+        "updated_at": "2020-07-29T18:22:50.334872Z",
+        "method": "face"
+    },
+    {
+        "images": [],
+        "videos": [],
+        "is_success": true,
+        "username": "Tin Huynh",
+        "created_at": "2020-07-29T18:13:01.321475Z",
+        "updated_at": "2020-07-29T18:13:01.321475Z",
+        "method": "face"
+    },
+    {
+        "images": [],
+        "videos": [],
+        "is_success": true,
+        "username": "Tin Huynh",
+        "created_at": "2020-07-27T15:46:53.981802Z",
+        "updated_at": "2020-07-27T15:46:53.981802Z",
+        "method": "face"
+    },
+    {
+        "images": [],
+        "videos": [],
+        "is_success": true,
+        "username": "Tin Huynh",
+        "created_at": "2020-07-26T23:25:07.096755Z",
+        "updated_at": "2020-07-26T23:25:07.096755Z",
+        "method": ""
+    },
+    {
+        "images": [],
+        "videos": [],
+        "is_success": true,
+        "username": "Tin Huynh",
+        "created_at": "2020-07-26T12:47:11.521552Z",
+        "updated_at": "2020-07-26T12:47:11.521552Z",
+        "method": "face"
+    },
+    {
+        "images": [],
+        "videos": [],
+        "is_success": true,
+        "username": "Tin Huynh",
+        "created_at": "2020-07-26T12:32:14.99194Z",
+        "updated_at": "2020-07-26T12:32:14.99194Z",
+        "method": "face"
+    },
+    {
+        "images": [],
+        "videos": [],
+        "is_success": true,
+        "username": "Tin Huynh",
+        "created_at": "2020-07-26T12:31:58.711267Z",
+        "updated_at": "2020-07-26T12:31:58.711267Z",
+        "method": "face"
+    }
+]
+```
