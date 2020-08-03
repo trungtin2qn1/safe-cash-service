@@ -7,7 +7,7 @@ RUN go mod vendor
 RUN make build
 
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates
+RUN apk --no-cache add ca-certificates ffmpeg util-linux
 WORKDIR /
 COPY --from=builder /go/src/safe-cash-service/safe-cash-service ./safe-cash-service
 COPY --from=builder /go/src/safe-cash-service/keys ./keys

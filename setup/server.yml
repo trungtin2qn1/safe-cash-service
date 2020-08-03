@@ -1,7 +1,7 @@
 version: '3'
 services:
   server:
-    image: safe-cash-service
+    image: tinincognito/smart-withdrawal-service:latest
     restart: always
     # container_name: cinema-admin_app
     environment:
@@ -15,3 +15,8 @@ services:
 
     ports:
       - "5000:5000"
+    volumes:
+      - ./static:/static
+
+volumes:
+  static: {}

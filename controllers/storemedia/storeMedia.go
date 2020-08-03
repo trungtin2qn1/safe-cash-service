@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"image/png"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -25,10 +26,14 @@ const (
 	Video          = "video"
 	Screenshot     = "screenshot"
 	ThumbnailVideo = "thumbnail_video"
+	// ParentFileDir  = "/smart-withdrawal"
+	// FileDir        = "/smart-withdrawal/static"
+	// ParentFileDir  = "/smart-withdrawal"
+	FileDir = "static"
 )
 
 //handleFormFile ...
-func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID string) (*models.StoreMedia, error) {
+func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID, unlockingLogID string) (*models.StoreMedia, error) {
 	file, header, err := c.Request.FormFile(fileNameRequest)
 	if err != nil {
 		if file == nil {
@@ -43,7 +48,7 @@ func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID string) (*m
 
 	// Save file here
 	fileName = fileName + "." + tail
-	out, err := os.Create("static/" + fileName)
+	out, err := os.Create(FileDir + "/" + fileName)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +71,12 @@ func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID string) (*m
 			return nil, err
 		}
 
-		_, err := storemedia.CreateStoreMedia(thumbnail, ThumbnailVideo, thumbnail, &userID, &storeID)
+		media, err := storemedia.CreateStoreMedia(thumbnail, ThumbnailVideo, thumbnail, &userID, &storeID)
+		if err != nil {
+			return nil, err
+		}
+
+		_, err = storemedia.CreateMediaUnlockingLog(&media.ID, &unlockingLogID)
 		if err != nil {
 			return nil, err
 		}
@@ -74,6 +84,11 @@ func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID string) (*m
 	}
 
 	media, err := storemedia.CreateStoreMedia(fileName, typeMedia, thumbnail, &userID, &storeID)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = storemedia.CreateMediaUnlockingLog(&media.ID, &unlockingLogID)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +111,7 @@ func generateThumbnailFromImage(fileName string) {
 
 func generateThumbnailFromVideo(fileName string) (string, error) {
 	outputName := uuid.New().String()
-	cmd := exec.Command("ffmpeg", "-i", "static/"+fileName, "-ss", "00:00:01.000", "-vframes", "1", "static/"+outputName+".png")
+	cmd := exec.Command("ffmpeg", "-i", FileDir+"/"+fileName, "-ss", "00:00:01.000", "-vframes", "1", FileDir+"/"+outputName+".png")
 	if err := cmd.Run(); err != nil {
 		return "", err
 	}
@@ -126,7 +141,31 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	screenshotMedia, err := handleFormFile(c, "screenshot", userID, storeID)
+	// if _, err := os.Stat(ParentFileDir); os.IsNotExist(err) {
+	// 	os.Mkdir(ParentFileDir, 0700)
+	// 	log.Println(10)
+	// }
+	// else {
+	// 	log.Println(0)
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"message": "Can't create parent directory",
+	// 	})
+	// 	return
+	// }
+
+	if _, err := os.Stat(FileDir); os.IsNotExist(err) {
+		os.Mkdir(FileDir, 0700)
+		log.Println(11)
+	}
+	// else {
+	// 	log.Println(1)
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"message": "Can't create sub directory",
+	// 	})
+	// 	return
+	// }
+
+	_, err := handleFormFile(c, "screenshot", userID, storeID, unlockingLogID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
@@ -134,32 +173,12 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	if screenshotMedia != nil {
-		_, err := storemedia.CreateMediaUnlockingLog(&screenshotMedia.ID, &unlockingLogID)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": fmt.Sprintf("%s", err),
-			})
-			return
-		}
-	}
-
-	videoMedia, err := handleFormFile(c, "video", userID, storeID)
+	_, err = handleFormFile(c, "video", userID, storeID, unlockingLogID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})
 		return
-	}
-
-	if videoMedia != nil {
-		_, err := storemedia.CreateMediaUnlockingLog(&videoMedia.ID, &unlockingLogID)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": fmt.Sprintf("%s", err),
-			})
-			return
-		}
 	}
 
 	c.JSON(200, gin.H{
@@ -229,6 +248,7 @@ func GetByUnlockingID(c *gin.Context) {
 		})
 		return
 	}
+
 	storeMedias := []models.StoreMedia{}
 	for _, v := range mediaUnlockingLog {
 		storeMedia, err := storemedia.GetByID(*v.StoreMediaID)

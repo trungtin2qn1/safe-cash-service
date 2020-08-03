@@ -53,6 +53,8 @@ func SetUpRouter() {
 	api := router.Group("/apis")
 	{
 
+		api.StaticFS("/public", http.Dir("static"))
+
 		services := api.Group("/services")
 		{
 			services.Use(middleware.VerifyClientCridentials)
@@ -86,6 +88,7 @@ func SetUpRouter() {
 			auth.PUT("/notification/:notification_id", userController.UpdateNotificationStatus)
 			auth.GET("/staffs", merchantController.GetStaffsInStore)
 			auth.POST("/train-model") // Not implemented yet
+			auth.POST("/log-out", userController.LogOut)
 
 			auth.POST("/notification/token", notificationController.SaveToken)
 			auth.POST("/notification", notificationController.Send)
