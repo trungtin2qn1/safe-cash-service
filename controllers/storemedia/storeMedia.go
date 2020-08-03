@@ -35,7 +35,7 @@ const (
 )
 
 //handleFormFile ...
-func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID, unlockingLogID string) (*models.StoreMedia, error) {
+func handleFormFile(c *gin.Context, fileNameRequest string, userID *string, storeID, unlockingLogID string) (*models.StoreMedia, error) {
 	file, header, err := c.Request.FormFile(fileNameRequest)
 	if err != nil {
 		if file == nil {
@@ -73,7 +73,7 @@ func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID, unlockingL
 			return nil, err
 		}
 
-		media, err := storemedia.CreateStoreMedia(thumbnail, ThumbnailVideo, thumbnail, &userID, &storeID)
+		media, err := storemedia.CreateStoreMedia(thumbnail, ThumbnailVideo, thumbnail, userID, &storeID)
 		if err != nil {
 			return nil, err
 		}
@@ -84,7 +84,7 @@ func handleFormFile(c *gin.Context, fileNameRequest, userID, storeID, unlockingL
 		}
 	}
 
-	media, err := storemedia.CreateStoreMedia(fileName, typeMedia, thumbnail, &userID, &storeID)
+	media, err := storemedia.CreateStoreMedia(fileName, typeMedia, thumbnail, userID, &storeID)
 	if err != nil {
 		return nil, err
 	}
@@ -134,38 +134,17 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	userID, ok := c.GetPostForm("user_id")
-	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Data or data type is invalid",
-		})
-		return
+	userIDStr, _ := c.GetPostForm("user_id")
+	var userID *string
+	if userIDStr != "" {
+		userID = new(string)
+		*userID = userIDStr
 	}
-
-	// if _, err := os.Stat(ParentFileDir); os.IsNotExist(err) {
-	// 	os.Mkdir(ParentFileDir, 0700)
-	// 	log.Println(10)
-	// }
-	// else {
-	// 	log.Println(0)
-	// 	c.JSON(http.StatusInternalServerError, gin.H{
-	// 		"message": "Can't create parent directory",
-	// 	})
-	// 	return
-	// }
 
 	if _, err := os.Stat(FileDir); os.IsNotExist(err) {
 		os.Mkdir(FileDir, 0700)
 		log.Println(11)
 	}
-	// else {
-	// 	log.Println(1)
-	// 	c.JSON(http.StatusInternalServerError, gin.H{
-	// 		"message": "Can't create sub directory",
-	// 	})
-	// 	return
-	// }
-
 	_, err := handleFormFile(c, "screenshot", userID, storeID, unlockingLogID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
