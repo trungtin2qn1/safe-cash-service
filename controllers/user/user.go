@@ -261,5 +261,31 @@ func UpdatePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Success",
 	})
+}
 
+//UpdateAvatar ...
+func UpdateAvatar(c *gin.Context) {
+	interfaceUserID, _ := c.Get("user_id")
+	userID := fmt.Sprintf("%v", interfaceUserID)
+
+	avatar, err := handleFormFile(c, "avatar")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	err = user.UpdateAvatar(userID, avatar)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	avatar = Host + avatar
+	c.JSON(200, gin.H{
+		"image": avatar,
+	})
 }

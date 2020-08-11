@@ -106,3 +106,19 @@ func UpdateInfo(userID string, userInfo *models.User) error {
 	return updateInfo(dbConn, user, userInfo)
 
 }
+
+//UpdateAvatar ...
+func UpdateAvatar(userID, avatar string) error {
+
+	dbConn := db.GetDB()
+
+	user := models.User{}
+
+	dbConn = dbConn.Model(&user).Where("id = ?", userID).Update("avatar", avatar)
+	if dbConn.Error != nil {
+		return dbConn.Error
+	}
+
+	return dbConn.Error
+
+}

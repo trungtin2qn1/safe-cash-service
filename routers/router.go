@@ -75,6 +75,7 @@ func SetUpRouter() {
 				{
 					// self.GET("", userController.GetInfo)
 					self.PUT("", userController.UpdateInfoV1)
+					self.PUT("/avatar", userController.UpdateAvatar)
 					// self.PUT("/password", userController.UpdatePassword)
 				}
 			}
