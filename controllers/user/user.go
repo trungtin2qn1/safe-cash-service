@@ -165,6 +165,7 @@ func GetInfo(c *gin.Context) {
 	}
 
 	userDisplay.Role = storeJunctionUser.Role
+	userDisplay.Avatar = Host + userDisplay.Avatar
 
 	c.JSON(200, userDisplay)
 }
@@ -192,7 +193,44 @@ func UpdateInfo(c *gin.Context) {
 	}
 
 	c.JSON(200, newUserInfo)
+}
 
+//UpdateInfoV1 ...
+func UpdateInfoV1(c *gin.Context) {
+	interfaceUserID, _ := c.Get("user_id")
+	userID := fmt.Sprintf("%v", interfaceUserID)
+
+	newUserInfo := models.User{}
+	err := c.ShouldBind(&newUserInfo)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Data or data type is invalid",
+		})
+		return
+	}
+
+	avatar, err := handleFormFile(c, "avatar")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	if avatar != "" {
+		newUserInfo.Avatar = avatar
+	}
+
+	err = user.UpdateInfo(userID, &newUserInfo)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": fmt.Sprintf("%s", err),
+		})
+		return
+	}
+
+	newUserInfo.Avatar = Host + newUserInfo.Avatar
+	c.JSON(200, newUserInfo)
 }
 
 //UpdatePassword ...

@@ -66,6 +66,20 @@ func SetUpRouter() {
 		api.POST("/login", userController.Login)
 		api.POST("/access-token", userController.GetAccessToken)
 
+		v1 := api.Group("/v1")
+		{
+			auth := v1.Group("/auth")
+			{
+				auth.Use(middleware.VerifyJWTToken)
+				self := auth.Group("/self")
+				{
+					// self.GET("", userController.GetInfo)
+					self.PUT("", userController.UpdateInfoV1)
+					// self.PUT("/password", userController.UpdatePassword)
+				}
+			}
+		}
+
 		auth := api.Group("/auth")
 		{
 			auth.Use(middleware.VerifyJWTToken)

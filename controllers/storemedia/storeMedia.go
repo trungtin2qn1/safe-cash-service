@@ -70,16 +70,19 @@ func handleFormFile(c *gin.Context, fileNameRequest, storeID, unlockingLogID str
 	typeMedia := ""
 	thumbnail := ""
 
-	log.Println("Content-type:", header.Header.Get("Content-type"))
+	tail = strings.ToLower(tail)
 
-	if strings.HasPrefix(header.Header.Get("Content-type"), Image) || strings.HasSuffix(fileName, "png") ||
-		strings.HasSuffix(fileName, "jpeg") || strings.HasSuffix(fileName, "jpg") {
+	if strings.HasPrefix(header.Header.Get("Content-type"), Image) ||
+		tail == "png" ||
+		tail == "jpeg" ||
+		tail == "jpg" {
 		typeMedia = Image
 		thumbnail = fileName
 	}
 
 	if strings.HasPrefix(header.Header.Get("Content-type"), Video) ||
-		strings.HasSuffix(fileName, "mp4") || strings.HasSuffix(fileName, "avi") {
+		tail == "mp4" ||
+		tail == "avi" {
 		typeMedia = Video
 		thumbnail, err = generateThumbnailFromVideo(fileName)
 		if err != nil {
