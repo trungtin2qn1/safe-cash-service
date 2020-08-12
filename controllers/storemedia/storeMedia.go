@@ -181,20 +181,12 @@ func GetByStoreID(c *gin.Context) {
 
 	date := c.Query("date")
 
-	users, err := user.GetUsersByStoreID(storeID)
+	unLockingLogs, err := unlockinglog.GetUnlockingLogsByStoreID(storeID, date)
 	if err != nil {
-		c.JSON(http.StatusNotAcceptable, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})
 		return
-	}
-
-	unLockingLogs := []models.UnlockingLog{}
-	for _, v := range users {
-		temp, err := unlockinglog.GetUnlockingLogsByUserIDAndDate(v.ID, date)
-		if err == nil {
-			unLockingLogs = append(unLockingLogs, temp...)
-		}
 	}
 
 	storeMediasDisplay := []display.StoreMedia{}
@@ -233,16 +225,22 @@ func GetByStoreID(c *gin.Context) {
 
 			// storeMediaDisplay.Medias = append(storeMediaDisplay.Medias, storeMedia)
 		}
-		userInfo, err := user.GetUserByID(*v.UserID)
-		if err != nil {
-			continue
-		}
 		storeMediaDisplay.UnlockID = v.ID
 		storeMediaDisplay.Method = v.Method
 		storeMediaDisplay.CreatedAt = v.CreatedAt
 		storeMediaDisplay.UpdatedAt = v.UpdatedAt
-		storeMediaDisplay.Username = userInfo.FirstName + " " + userInfo.LastName
 		storeMediaDisplay.IsSuccess = *v.IsSuccess
+
+		if v.UserID != nil {
+			userInfo, err := user.GetUserByID(*v.UserID)
+			if err != nil {
+				continue
+			}
+			storeMediaDisplay.Username = userInfo.FirstName + " " + userInfo.LastName
+		} else {
+			storeMediaDisplay.Username = "Ai đó"
+		}
+
 		storeMediasDisplay = append(storeMediasDisplay, storeMediaDisplay)
 	}
 

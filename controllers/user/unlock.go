@@ -209,7 +209,7 @@ func UnlockByService(c *gin.Context) {
 			}
 		}
 
-		_, err = notification.Create(title, unlockingLog.Content, userID)
+		_, err = notification.Create(title, unlockingLog.Content, userID, &storeID)
 		if err != nil {
 			log.Println(err)
 			return

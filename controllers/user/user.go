@@ -110,6 +110,8 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	userDisplay.Avatar = Host + userDisplay.Avatar
+
 	c.JSON(200, userDisplay)
 }
 

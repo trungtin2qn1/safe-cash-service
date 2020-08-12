@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"net/http"
+	"safe-cash-service/models"
 	"safe-cash-service/service/notification"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,8 @@ import (
 func GetNotifications(c *gin.Context) {
 	interfaceUserID, _ := c.Get("user_id")
 	userID := fmt.Sprintf("%v", interfaceUserID)
+	interfaceStoreID, _ := c.Get("store_id")
+	storeID := fmt.Sprintf("%v", interfaceStoreID)
 
 	support := &notification.GetSupport{}
 	err := c.ShouldBindQuery(&support)
@@ -22,12 +25,24 @@ func GetNotifications(c *gin.Context) {
 		return
 	}
 
-	notifications, err := notification.GetByUserID(userID, *support)
-	if err != nil && len(notifications) != 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": fmt.Sprintf("%s", err),
-		})
-		return
+	notifications := []models.Notification{}
+
+	if support.Type == notification.STORE {
+		notifications, err = notification.GetByStoreID(storeID, *support)
+		if err != nil && len(notifications) != 0 {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": fmt.Sprintf("%s", err),
+			})
+			return
+		}
+	} else {
+		notifications, err = notification.GetByUserID(userID, *support)
+		if err != nil && len(notifications) != 0 {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": fmt.Sprintf("%s", err),
+			})
+			return
+		}
 	}
 
 	c.JSON(200, notifications)

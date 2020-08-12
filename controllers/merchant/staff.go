@@ -25,5 +25,9 @@ func GetStaffsInStore(c *gin.Context) {
 		return
 	}
 
+	for i := 0; i < len(staffs); i++ {
+		staffs[i].Avatar = Host + staffs[i].Avatar
+	}
+
 	c.JSON(200, staffs)
 }

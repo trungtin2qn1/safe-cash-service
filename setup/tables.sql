@@ -211,6 +211,8 @@ CREATE TABLE notifications (
     body text,
     is_read boolean DEFAULT false not null,
     user_id bigint,
+    store_id bigint,
+    foreign key (store_id) references stores(id),
     foreign key (user_id) references users(id)
 );
 

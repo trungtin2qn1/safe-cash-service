@@ -15,12 +15,13 @@ func UpdateStatus(noti *models.Notification, status bool) error {
 }
 
 //Create ...
-func Create(title, body string, userID *string) (models.Notification, error) {
+func Create(title, body string, userID, storeID *string) (models.Notification, error) {
 	notification := models.Notification{
-		Title:  title,
-		Body:   body,
-		UserID: userID,
-		IsRead: false,
+		Title:   title,
+		Body:    body,
+		UserID:  userID,
+		IsRead:  false,
+		StoreID: storeID,
 	}
 
 	dbConn := db.GetDB()
@@ -44,6 +45,23 @@ func GetByUserID(userID string, support GetSupport) ([]models.Notification, erro
 		Limit(support.Limit).
 		Order("id desc").
 		Where("user_id = ?", userID).
+		Find(&notifications)
+
+	return notifications, dbConn.Error
+}
+
+//GetByStoreID :
+func GetByStoreID(storeID string, support GetSupport) ([]models.Notification, error) {
+	notifications := []models.Notification{}
+
+	dbConn := db.GetDB()
+	support.getDefault()
+
+	dbConn = dbConn.
+		Offset(support.Offset).
+		Limit(support.Limit).
+		Order("id desc").
+		Where("store_id = ?", storeID).
 		Find(&notifications)
 
 	return notifications, dbConn.Error
@@ -73,10 +91,16 @@ func GetByID(id string) (models.Notification, error) {
 	return notifications, dbConn.Error
 }
 
+const (
+	STORE = "store"
+	USER  = "user"
+)
+
 //GetSupport ...
 type GetSupport struct {
-	Offset int `json:"offset,omitempty" form:"offset,omitempty"`
-	Limit  int `json:"limit,omitempty" form:"limit,omitempty"`
+	Offset int    `json:"offset,omitempty" form:"offset,omitempty"`
+	Limit  int    `json:"limit,omitempty" form:"limit,omitempty"`
+	Type   string `json:"type,omitempty" form:"type,omitempty"`
 }
 
 //getDefault ...
