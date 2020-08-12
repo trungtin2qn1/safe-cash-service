@@ -273,6 +273,7 @@ func UpdateAvatar(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})
+		log.Println("handle form file error:", err)
 		return
 	}
 
@@ -281,6 +282,7 @@ func UpdateAvatar(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": fmt.Sprintf("%s", err),
 		})
+		log.Println("Update avatar error:", err)
 		return
 	}
 
