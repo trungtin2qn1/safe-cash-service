@@ -144,6 +144,16 @@ For porpose of education, you can check more detail in folder setup with docker 
 }
 ```
 
+`Query`:
+
+```json
+{
+    "offset": 0,
+    "limit": 0,
+    "type": "store" (for get all store notifications)
+}
+```
+
 `Request`:
 
 ```json
