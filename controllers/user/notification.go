@@ -53,6 +53,8 @@ func GetNotifications(c *gin.Context) {
 func UpdateNotificationStatus(c *gin.Context) {
 	interfaceUserID, _ := c.Get("user_id")
 	userID := fmt.Sprintf("%v", interfaceUserID)
+	interfaceStoreID, _ := c.Get("store_id")
+	storeID := fmt.Sprintf("%v", interfaceStoreID)
 
 	notificationID := c.Param("notification_id")
 
@@ -64,11 +66,20 @@ func UpdateNotificationStatus(c *gin.Context) {
 		return
 	}
 
-	if *noti.UserID != userID {
-		c.JSON(http.StatusForbidden, gin.H{
-			"message": "This notification is not belong to user",
-		})
-		return
+	if noti.UserID != nil {
+		if *noti.UserID != userID {
+			c.JSON(http.StatusForbidden, gin.H{
+				"message": "This notification is not belong to user",
+			})
+			return
+		}
+	} else {
+		if noti.StoreID == nil || *noti.StoreID != storeID {
+			c.JSON(http.StatusForbidden, gin.H{
+				"message": "This notification is not belong to store",
+			})
+			return
+		}
 	}
 
 	err = notification.UpdateStatus(&noti, true)
